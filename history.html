@@ -5,34 +5,44 @@
 
 <h2>История школы</h2>
 
-<!-- Контейнер для вложенных вкладок (с возможностью горизонтальной прокрутки) -->
-<div class="sub-tabs-container">
-    <div class="sub-tabs">
-        <!-- Вкладки для переключения между 11 файлами. data-iframe-src указывает имя файла -->
-        <a href="#" class="sub-tab active" data-iframe-src="1.html">Раздел 1</a>
-        <a href="#" class="sub-tab" data-iframe-src="2.html">Раздел 2</a>
-        <a href="#" class="sub-tab" data-iframe-src="3.html">Раздел 3</a>
-        <a href="#" class="sub-tab" data-iframe-src="4.html">Раздел 4</a>
-        <a href="#" class="sub-tab" data-iframe-src="5.html">Раздел 5</a>
-        <a href="#" class="sub-tab" data-iframe-src="6.html">Раздел 6</a>
-        <a href="#" class="sub-tab" data-iframe-src="7.html">Раздел 7</a>
-        <a href="#" class="sub-tab" data-iframe-src="8.html">Раздел 8</a>
-        <a href="#" class="sub-tab" data-iframe-src="9.html">Раздел 9</a>
-        <a href="#" class="sub-tab" data-iframe-src="10.html">Раздел 10</a>
-        <a href="#" class="sub-tab" data-iframe-src="11.html">Раздел 11</a>
+<!-- Новая навигация ВМЕСТО вкладок -->
+<div class="history-navigation">
+    <button class="nav-arrow prev" id="history-prev" title="Предыдущий раздел" disabled><</button>
+    <div class="current-section-container">
+        <button class="current-section-title" id="history-title">Раздел 1</button>
+        <!-- Выпадающий список будет создаваться динамически -->
+        <div class="section-dropdown" id="history-dropdown" style="display: none;">
+            <!-- Ссылки на разделы -->
+            <a href="#" data-section-index="0">Раздел 1</a>
+            <a href="#" data-section-index="1">Раздел 2</a>
+            <a href="#" data-section-index="2">Раздел 3</a>
+            <a href="#" data-section-index="3">Раздел 4</a>
+            <a href="#" data-section-index="4">Раздел 5</a>
+            <a href="#" data-section-index="5">Раздел 6</a>
+            <a href="#" data-section-index="6">Раздел 7</a>
+            <a href="#" data-section-index="7">Раздел 8</a>
+            <a href="#" data-section-index="8">Раздел 9</a>
+            <a href="#" data-section-index="9">Раздел 10</a>
+            <a href="#" data-section-index="10">Раздел 11</a>
+        </div>
     </div>
+    <button class="nav-arrow next" id="history-next" title="Следующий раздел">></button>
 </div>
 
-<!-- Контейнер для iframe (для стилизации рамки и т.д.) -->
+<!-- Контейнер для iframe (остается прежним) -->
 <div class="iframe-container">
-    <!-- Iframe, в который будут загружаться файлы 1.html - 11.html -->
     <iframe id="history-iframe"
-            src="1.html"
+            src="1.html" <!-- Начинаем с первого -->
             frameborder="0"
             width="100%"
             height="600px"
             title="Содержимое раздела истории школы">
-        Ваш браузер не поддерживает iframe. Пожалуйста, обновите браузер или включите поддержку iframe.
+        Ваш браузер не поддерживает iframe.
     </iframe>
 </div>
 
+<!-- СКРИПТ ИЗ ЭТОГО ФАЙЛА УДАЛЕН! Логика будет в основном script.js -->
+
+<!-- ======================================================= -->
+<!-- Конец содержимого для раздела "История школы"         -->
+<!-- ======================================================= -->
