@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Виртуальный музей Улан-Удэ МАОУ СОШ №17 "Хранители Памяти"</title>
+    <!-- Подключение файла стилей -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="overlay">
+        <!-- Part 1: Logo Header (Scrolls away) -->
+        <div class="main-header">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Виртуальный музей Улан-Удэ МАОУ СОШ №17 "Хранители Памяти"</h1>
+                    <p>80 лет Великой Победы</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: Tabs Header (Becomes sticky) -->
+        <div class="tabs-header">
+            <div class="tabs-container">
+                 <div class="tabs-header-inner"> <!-- Added inner div for padding -->
+                    <div class="tabs">
+                        <!-- Атрибут data-page теперь содержит имя файла контента (без .html) -->
+                        <a href="#" class="tab active" data-page="home">Главная</a>
+                        <a href="#" class="tab" data-page="history">История школы</a>
+                        <a href="#" class="tab" data-page="monuments">Памятники республики Бурятия</a>
+                        <a href="#" class="tab" data-page="archive">Архив Уголка Боевой Славы</a>
+                        <a href="#" class="tab" data-page="items">Предметы эпохи</a>
+                        <a href="#" class="tab" data-page="war-history">Война в истории моей семьи</a>
+                        <a href="#" class="tab" data-page="svo">СВО</a>
+                    </div>
+                 </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area - СЮДА БУДЕТ ЗАГРУЖАТЬСЯ КОНТЕНТ -->
+        <div class="content" id="content-placeholder">
+            <!-- Изначально пусто или можно добавить прелоадер -->
+            <p>Загрузка...</p>
+        </div>
+
+        <footer>
+            <p>© 2024 Виртуальный музей МАОУ СОШ №17 "Хранители Памяти" | г. Улан-Удэ</p>
+            <p>Контакты: тел. (3012) XX-XX-XX | email: museum@school17.ru</p>
+        </footer>
+    </div>
+
+    <!-- Подключение файла скриптов -->
+    <script src="script.js"></script>
+</body>
+</html>

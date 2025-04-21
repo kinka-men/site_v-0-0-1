@@ -1,0 +1,389 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', Arial, sans-serif;
+}
+
+body {
+    background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrO6TnsanXyAZWmhY578O7cbiXTC3q9GQ8sNul25wu5FkMrSxWKnyVEZk&s=10');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: #333;
+}
+
+.overlay {
+    background-color: rgba(255, 255, 255, 0.95);
+    min-height: 100vh;
+    padding-bottom: 50px; /* Ensure space below content */
+}
+
+/* --- Header for Logo Only --- */
+.main-header {
+    background-color: rgba(211, 47, 47, 0.9); /* Semi-transparent red */
+    padding: 15px 0;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+}
+
+.header-content { /* Used only for logo centering now */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo {
+    text-align: center;
+}
+
+.logo h1 {
+    font-size: 28px;
+    color: #fff;
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.logo p {
+    font-size: 16px;
+    color: #fff9c4; /* Light yellow for subtitle */
+    font-weight: bold;
+}
+
+/* --- Sticky Tabs Header --- */
+.tabs-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: rgba(211, 47, 47, 0.95); /* Slightly more opaque red for better readability when sticky */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    color: white; /* Ensure contrast for any potential text */
+}
+
+.tabs-container { /* Holds the scrollable tabs, centered */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px; /* Padding inside the centered container */
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: thin;
+    scrollbar-color: #fff9c4 #d32f2f;
+}
+
+.tabs-header-inner { /* Inner div for padding of the tabs row */
+     padding: 10px 0 5px 0; /* Top/Bottom padding for the tabs */
+}
+
+.tabs {
+    display: inline-flex;
+    min-width: 100%; /* Ensure it tries to fill container */
+}
+
+.tab {
+    padding: 12px 20px;
+    background-color: rgba(255, 235, 59, 0.8); /* Semi-transparent yellow */
+    color: #d32f2f; /* Red text */
+    border-radius: 5px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    text-decoration: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* Prevent tabs from shrinking */
+}
+
+ .tab:last-child {
+     margin-right: 0; /* Remove margin from last tab */
+ }
+
+.tab:hover {
+    background-color: rgba(253, 216, 53, 0.9); /* Darker yellow on hover */
+    transform: translateY(-2px);
+}
+
+.tab.active {
+    background-color: #fff9c4; /* Light yellow active */
+    color: #b71c1c; /* Dark red text */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Content --- */
+.content {
+    max-width: 1200px;
+    margin: 30px auto; /* Margin top adjusted automatically by sticky */
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    /* Убираем стили для .page, т.к. его больше нет как общего контейнера */
+    /* display: none; */
+}
+
+/* Стиль для загрузки */
+#content-placeholder p {
+    text-align: center;
+    font-style: italic;
+    color: #666;
+}
+
+/* --- Hero Block Styles (applied within loaded content) --- */
+.hero {
+    text-align: center;
+    padding: 50px 20px;
+    background-image: url('https://via.placeholder.com/1200x600?text=Фото+школы');
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    position: relative;
+    color: white;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 249, 196, 0.7); /* Semi-transparent light yellow */
+    border-radius: 10px;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    color: #333; /* Dark text for readability */
+}
+
+.hero h2 {
+    font-size: 36px;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.5);
+    color: #d32f2f; /* Red header */
+}
+
+.hero p {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+    color: #333; /* Dark text */
+}
+
+.years {
+    font-size: 32px;
+    font-weight: bold;
+    color: #d32f2f;
+    background-color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: inline-block;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* --- General Content Element Styles --- */
+/* Применяем стили к элементам ВНУТРИ .content */
+.content h2 {
+    color: #d32f2f; /* Red for headers */
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #d32f2f;
+}
+
+.content h3 {
+    color: #d32f2f; /* Red for sub-headers */
+    margin-bottom: 15px;
+}
+
+.content p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.content .section { /* Стили для секций внутри загруженного контента */
+    margin-bottom: 30px;
+    background-color: white; /* Может быть избыточным, т.к. .content уже белый */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+}
+
+.content .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.content .gallery-item {
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    background-color: white;
+}
+
+.content .gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.content .gallery-item img,
+.content .gallery-item video {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block; /* Prevents small gap below image */
+}
+
+.content .gallery-caption {
+    padding: 10px;
+    background-color: white;
+    text-align: center;
+    color: #333;
+    border-top: 1px solid #eee;
+}
+
+.content .archive-item {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #d32f2f;
+}
+
+.content .archive-item h3 {
+    color: #d32f2f;
+    margin-bottom: 10px;
+}
+
+.content .memory-wall {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.content .memory-card {
+    background-color: white;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #d32f2f;
+}
+
+.content .memory-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block; /* Prevents small gap below image */
+}
+
+.content .memory-info {
+    padding: 15px;
+}
+
+.content .memory-info h3 {
+    color: #d32f2f;
+    margin-bottom: 10px;
+}
+
+.content .memory-info p {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.content .video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    margin-bottom: 20px;
+    overflow: hidden; /* Ensure iframe fits */
+    border-radius: 5px; /* Optional: round corners */
+}
+
+.content .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* --- Footer Styles --- */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(211, 47, 47, 0.9); /* Semi-transparent red footer */
+    color: white;
+    margin-top: 50px; /* Spacing above footer */
+}
+
+/* --- Scrollbar Styles --- */
+.tabs-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.tabs-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1); /* Darker track on red background */
+    border-radius: 4px;
+}
+
+.tabs-container::-webkit-scrollbar-thumb {
+    background-color: #fff9c4; /* Light yellow thumb */
+    border-radius: 4px;
+}
+ .tabs-container::-webkit-scrollbar-thumb:hover {
+     background-color: #fdd835; /* Darker yellow on hover */
+ }
+
+/* --- Media Queries (Adaptivity) --- */
+@media (max-width: 768px) {
+    .logo h1 {
+        font-size: 22px;
+    }
+
+    /* Adjust padding for smaller screens if needed */
+    .tabs-container {
+         padding: 0 15px;
+    }
+    .tab {
+        padding: 10px 15px;
+    }
+
+    .content {
+        padding: 20px;
+        margin: 20px auto; /* Adjust content margin */
+    }
+
+    .content .hero { /* Apply hero adjustments inside content */
+        padding: 30px 15px;
+    }
+
+    .content .hero h2 {
+        font-size: 28px;
+    }
+
+    .content .hero p {
+        font-size: 18px;
+    }
+
+    .content .years {
+        font-size: 24px;
+    }
+
+    /* Adjust gallery columns for smaller screens if needed */
+    .content .gallery {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    .content .memory-wall {
+         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
