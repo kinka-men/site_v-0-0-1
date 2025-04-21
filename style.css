@@ -18,6 +18,8 @@ body {
     background-color: rgba(255, 255, 255, 0.95);
     min-height: 100vh;
     padding-bottom: 50px; /* Ensure space below content */
+    display: flex; /* Use flexbox for footer sticking */
+    flex-direction: column; /* Stack elements vertically */
 }
 
 /* --- Header for Logo Only --- */
@@ -26,6 +28,7 @@ body {
     padding: 15px 0;
     color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+    flex-shrink: 0; /* Prevent header from shrinking */
 }
 
 .header-content { /* Used only for logo centering now */
@@ -62,6 +65,7 @@ body {
     background-color: rgba(211, 47, 47, 0.95); /* Slightly more opaque red for better readability when sticky */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     color: white; /* Ensure contrast for any potential text */
+    flex-shrink: 0; /* Prevent sticky header from shrinking */
 }
 
 .tabs-container { /* Holds the scrollable tabs, centered */
@@ -113,26 +117,26 @@ body {
 }
 
 /* --- Content --- */
-.content {
+.content { /* Container where dynamic content is loaded */
     max-width: 1200px;
     margin: 30px auto; /* Margin top adjusted automatically by sticky */
     padding: 30px;
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    /* Убираем стили для .page, т.к. его больше нет как общего контейнера */
-    /* display: none; */
+    flex-grow: 1; /* Allow content to take available space */
 }
 
-/* Стиль для загрузки */
-#content-placeholder p {
+/* Style for loading message or preloader */
+#content-placeholder > p { /* Select only direct P child for loading message */
     text-align: center;
     font-style: italic;
     color: #666;
+    padding: 40px 0;
 }
 
 /* --- Hero Block Styles (applied within loaded content) --- */
-.hero {
+.content .hero { /* Note the .content prefix */
     text-align: center;
     padding: 50px 20px;
     background-image: url('https://via.placeholder.com/1200x600?text=Фото+школы');
@@ -144,7 +148,7 @@ body {
     color: white;
 }
 
-.hero::before {
+.content .hero::before {
     content: '';
     position: absolute;
     top: 0;
@@ -155,27 +159,27 @@ body {
     border-radius: 10px;
 }
 
-.hero-content {
+.content .hero-content {
     position: relative;
     z-index: 1;
     color: #333; /* Dark text for readability */
 }
 
-.hero h2 {
+.content .hero h2 {
     font-size: 36px;
     margin-bottom: 15px;
     text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.5);
     color: #d32f2f; /* Red header */
 }
 
-.hero p {
+.content .hero p {
     font-size: 24px;
     margin-bottom: 20px;
     text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
     color: #333; /* Dark text */
 }
 
-.years {
+.content .years {
     font-size: 32px;
     font-weight: bold;
     color: #d32f2f;
@@ -186,8 +190,8 @@ body {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* --- General Content Element Styles --- */
-/* Применяем стили к элементам ВНУТРИ .content */
+/* --- General Content Element Styles (applied within loaded content) --- */
+/* Prefix with .content to ensure styles apply after content load */
 .content h2 {
     color: #d32f2f; /* Red for headers */
     margin-bottom: 20px;
@@ -206,9 +210,9 @@ body {
     color: #333;
 }
 
-.content .section { /* Стили для секций внутри загруженного контента */
+.content .section {
     margin-bottom: 30px;
-    background-color: white; /* Может быть избыточным, т.к. .content уже белый */
+    /* Background color inherited from .content */
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
@@ -248,6 +252,7 @@ body {
     text-align: center;
     color: #333;
     border-top: 1px solid #eee;
+    font-size: 14px;
 }
 
 .content .archive-item {
@@ -315,7 +320,89 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
+    border: none; /* Убираем границу у iframe плеера */
 }
+
+/* --- Стили для вложенных вкладок (Sub-Tabs) внутри .content --- */
+.content .sub-tabs-container {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd; /* Сделаем границу чуть заметнее */
+    padding-bottom: 0; /* Убираем отступ снизу, т.к. активная вкладка будет "наезжать" */
+    overflow-x: auto; /* Горизонтальный скролл для вложенных вкладок */
+    white-space: nowrap;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #eee;
+}
+
+.content .sub-tabs {
+    display: inline-flex; /* Чтобы скролл работал */
+}
+
+.content .sub-tab {
+    padding: 10px 18px; /* Сделаем чуть больше */
+    margin-right: 5px; /* Уменьшим отступ */
+    margin-bottom: -1px; /* Поднимаем вкладки, чтобы они заходили на нижнюю границу контейнера */
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-bottom: none; /* Убираем нижнюю границу у неактивных */
+    border-radius: 5px 5px 0 0; /* Скругляем только верхние углы */
+    background-color: #f0f0f0; /* Слегка серый фон */
+    color: #444; /* Темно-серый текст */
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.content .sub-tab:hover {
+    background-color: #e0e0e0;
+    color: #111;
+}
+
+.content .sub-tab.active {
+    background-color: white; /* Белый фон для активной */
+    color: #d32f2f; /* Красный цвет текста */
+    border-color: #ddd; /* Граница как у контейнера */
+    border-bottom: 1px solid white; /* "Стираем" границу контейнера под активной вкладкой */
+    position: relative; /* Для z-index и позиционирования */
+    /* top: 1px; - убрал, т.к. используем margin-bottom: -1px */
+    font-weight: bold;
+}
+
+/* --- Стили для контейнера iframe --- */
+.content .iframe-container {
+    /* margin-top: -1px; - не нужно, т.к. вкладки подняты */
+    border: 1px solid #ddd; /* Рамка вокруг iframe */
+    border-top: none; /* Верхняя граница уже есть от sub-tabs-container */
+    border-radius: 0 0 5px 5px; /* Скруглим нижние углы */
+    overflow: hidden; /* Чтобы скрыть углы iframe, если он сам не скруглен */
+    min-height: 500px; /* Минимальная высота, чтобы контейнер не схлопывался */
+}
+
+.content #history-iframe {
+    display: block; /* Убрать лишний отступ снизу у iframe */
+    border: none; /* Убираем собственную границу iframe */
+    width: 100%;
+    height: 600px; /* Задаем высоту здесь, можно будет менять через JS при необходимости */
+}
+
+/* --- Стили для скроллбара вложенных вкладок --- */
+.content .sub-tabs-container::-webkit-scrollbar {
+    height: 6px;
+}
+.content .sub-tabs-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+.content .sub-tabs-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+.content .sub-tabs-container::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
 
 /* --- Footer Styles --- */
 footer {
@@ -323,25 +410,24 @@ footer {
     padding: 20px;
     background-color: rgba(211, 47, 47, 0.9); /* Semi-transparent red footer */
     color: white;
-    margin-top: 50px; /* Spacing above footer */
+    margin-top: auto; /* Прижимаем футер к низу с помощью flexbox на .overlay */
+    flex-shrink: 0; /* Prevent footer from shrinking */
 }
 
-/* --- Scrollbar Styles --- */
+/* --- Main Tabs Scrollbar Styles --- */
 .tabs-container::-webkit-scrollbar {
     height: 8px;
 }
-
 .tabs-container::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1); /* Darker track on red background */
+    background: rgba(0, 0, 0, 0.1);
     border-radius: 4px;
 }
-
 .tabs-container::-webkit-scrollbar-thumb {
-    background-color: #fff9c4; /* Light yellow thumb */
+    background-color: #fff9c4;
     border-radius: 4px;
 }
  .tabs-container::-webkit-scrollbar-thumb:hover {
-     background-color: #fdd835; /* Darker yellow on hover */
+     background-color: #fdd835;
  }
 
 /* --- Media Queries (Adaptivity) --- */
@@ -350,7 +436,6 @@ footer {
         font-size: 22px;
     }
 
-    /* Adjust padding for smaller screens if needed */
     .tabs-container {
          padding: 0 15px;
     }
@@ -363,7 +448,7 @@ footer {
         margin: 20px auto; /* Adjust content margin */
     }
 
-    .content .hero { /* Apply hero adjustments inside content */
+    .content .hero {
         padding: 30px 15px;
     }
 
@@ -379,7 +464,6 @@ footer {
         font-size: 24px;
     }
 
-    /* Adjust gallery columns for smaller screens if needed */
     .content .gallery {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
@@ -387,78 +471,43 @@ footer {
          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     }
 
-        /* --- Стили для вложенных вкладок внутри .content --- */
-    .content .sub-tabs-container {
-        margin-bottom: 20px;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 5px;
-        overflow-x: auto; /* Горизонтальный скролл для вложенных вкладок */
-        white-space: nowrap;
-        scrollbar-width: thin;
-        scrollbar-color: #ccc #eee;
+    /* Стили для вложенных вкладок на мобильных */
+     .content .sub-tab {
+        padding: 8px 12px;
+        font-size: 13px;
     }
-    
-    .content .sub-tabs {
-        display: inline-flex; /* Чтобы скролл работал */
+     .content #history-iframe {
+        height: 500px; /* Можно уменьшить высоту iframe */
     }
-    
-    .content .sub-tab {
-        padding: 8px 15px;
-        margin-right: 8px;
-        cursor: pointer;
-        border: 1px solid #ddd;
-        border-bottom: none;
-        border-radius: 4px 4px 0 0;
-        background-color: #f9f9f9;
-        color: #666;
+}
+
+@media (max-width: 480px) {
+     .logo h1 {
+        font-size: 18px;
+    }
+     .logo p {
         font-size: 14px;
-        transition: background-color 0.3s ease, color 0.3s ease;
-        text-decoration: none;
-        flex-shrink: 0;
     }
-    
-    .content .sub-tab:hover {
-        background-color: #eee;
-        color: #333;
+     .tab {
+        padding: 8px 10px;
+        font-size: 14px;
     }
-    
-    .content .sub-tab.active {
-        background-color: white;
-        color: #d32f2f; /* Красный цвет, как у основных заголовков */
-        border-color: #ddd;
-        border-bottom: 1px solid white; /* Скрывает нижнюю границу контейнера */
-        position: relative;
-        top: 1px; /* Сдвигаем чуть вниз для эффекта */
-        font-weight: bold;
+     .content h2 {
+        font-size: 20px;
     }
-    
-    /* Стили для контейнера iframe */
-    .content .iframe-container {
-        margin-top: -1px; /* Чтобы примкнуть к нижней границе активной вкладки */
-        border: 1px solid #ddd; /* Рамка вокруг iframe */
-        border-radius: 0 0 5px 5px; /* Скруглим нижние углы */
-        overflow: hidden; /* Чтобы скрыть углы iframe, если он сам не скруглен */
+     .content .hero h2 {
+        font-size: 24px;
     }
-    
-    .content #history-iframe {
-        display: block; /* Убрать лишний отступ снизу */
-        /* Высоту лучше задавать здесь или прямо в теге iframe */
-        /* Можно попробовать задать высоту динамически через JS, но это сложнее */
+     .content .hero p {
+        font-size: 16px;
     }
-    
-    /* Стили для скроллбара вложенных вкладок */
-    .content .sub-tabs-container::-webkit-scrollbar {
-        height: 6px;
+     .content .years {
+        font-size: 20px;
     }
-    .content .sub-tabs-container::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 3px;
+      .content .gallery {
+        grid-template-columns: 1fr; /* Одна колонка для галереи */
     }
-    .content .sub-tabs-container::-webkit-scrollbar-thumb {
-        background: #ccc;
-        border-radius: 3px;
-    }
-    .content .sub-tabs-container::-webkit-scrollbar-thumb:hover {
-        background: #aaa;
+    .content .memory-wall {
+         grid-template-columns: 1fr; /* Одна колонка для стены памяти */
     }
 }
