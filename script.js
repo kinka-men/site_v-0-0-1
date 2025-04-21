@@ -1,77 +1,111 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const tabs = document.querySelectorAll('.tab');
+    const mainTabs = document.querySelectorAll('.tab'); // Основные вкладки навигации
     const contentPlaceholder = document.getElementById('content-placeholder'); // Контейнер для загрузки контента
-    const tabsContainer = document.querySelector('.tabs-container'); // Контейнер вкладок для скролла
+    const mainTabsContainer = document.querySelector('.tabs-container'); // Контейнер основных вкладок для скролла
 
-    // --- Функция для загрузки и отображения контента страницы ---
-    async function loadPageContent(pageName) {
-        // Показываем индикатор загрузки (можно сделать красивее)
+    // --- Функция для загрузки и отображения основного контента (HTML-фрагменты) ---
+    async function loadMainPageContent(pageName) {
+        // Показываем индикатор загрузки
         contentPlaceholder.innerHTML = '<p>Загрузка...</p>';
-
         const fileName = `${pageName}.html`; // Имя файла для загрузки (e.g., "history.html")
 
         try {
-            const response = await fetch(fileName); // Запрашиваем HTML-фрагмент
-
-            if (!response.ok) { // Проверка статуса ответа
+            const response = await fetch(fileName);
+            if (!response.ok) {
                 throw new Error(`Ошибка загрузки ${fileName}: ${response.status} ${response.statusText}`);
             }
+            const html = await response.text();
+            contentPlaceholder.innerHTML = html; // Вставляем загруженный HTML
 
-            const html = await response.text(); // Получаем HTML как текст
-            contentPlaceholder.innerHTML = html; // Вставляем загруженный HTML в контейнер
-
-            // Опционально: Прокрутка к началу контента после загрузки
-            // contentPlaceholder.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Важно: Инициализация iframe, если он был загружен (например, в history.html)
+            // Можно вызвать функцию инициализации здесь, если она нужна сразу после загрузки
+            // или положиться на делегирование событий.
 
         } catch (error) {
-            console.error("Не удалось загрузить контент:", error);
-            // Показываем сообщение об ошибке пользователю
+            console.error("Не удалось загрузить основной контент:", error);
             contentPlaceholder.innerHTML = `<p style="color: red; text-align: center;">Не удалось загрузить раздел '${pageName}'. Пожалуйста, проверьте консоль или попробуйте позже.</p>`;
         }
     }
 
-    // --- Обработка кликов по вкладкам ---
-    tabs.forEach(tab => {
+    // --- Обработка кликов по ОСНОВНЫМ вкладкам навигации ---
+    mainTabs.forEach(tab => {
         tab.addEventListener('click', function(e) {
-            e.preventDefault(); // Предотвращаем стандартное поведение ссылки
-
-            // 1. Снимаем класс 'active' со всех вкладок
-            tabs.forEach(t => t.classList.remove('active'));
-
-            // 2. Добавляем класс 'active' к нажатой вкладке
+            e.preventDefault();
+            // 1. Снимаем класс 'active' со всех ОСНОВНЫХ вкладок
+            mainTabs.forEach(t => t.classList.remove('active'));
+            // 2. Добавляем класс 'active' к нажатой ОСНОВНОЙ вкладке
             this.classList.add('active');
-
             // 3. Получаем имя страницы из атрибута 'data-page'
             const pageName = this.getAttribute('data-page');
-
-            // 4. Загружаем и отображаем соответствующий контент
-            loadPageContent(pageName);
-
-            // 5. Прокручиваем контейнер вкладок, чтобы нажатая была видна (опционально)
+            // 4. Загружаем и отображаем соответствующий основной контент
+            loadMainPageContent(pageName);
+            // 5. Прокручиваем контейнер ОСНОВНЫХ вкладок
             this.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         });
     });
 
-    // --- Загрузка контента для активной вкладки при первоначальной загрузке ---
-    const initialActiveTab = document.querySelector('.tab.active');
-    if (initialActiveTab) {
-        loadPageContent(initialActiveTab.getAttribute('data-page'));
-    } else if (tabs.length > 0) {
+    // --- Обработка кликов ВНУТРИ #content-placeholder (Делегирование событий) ---
+    // Этот обработчик будет ловить клики по элементам, загруженным динамически,
+    // включая вложенные вкладки .sub-tab
+    contentPlaceholder.addEventListener('click', function(event) {
+
+        // --- Логика для ВЛОЖЕННЫХ вкладок (.sub-tab) ---
+        const clickedSubTab = event.target.closest('.sub-tab');
+        if (clickedSubTab) {
+            event.preventDefault(); // Отменяем переход по ссылке '#'
+
+            // Ищем iframe и все вложенные вкладки ВНУТРИ #content-placeholder
+            const historyIframe = contentPlaceholder.querySelector('#history-iframe');
+            const allSubTabs = contentPlaceholder.querySelectorAll('.sub-tab');
+
+            if (!historyIframe) {
+                console.error("Не найден iframe #history-iframe внутри #content-placeholder при клике на sub-tab");
+                return;
+            }
+
+            // 1. Убираем класс 'active' со ВСЕХ вложенных вкладок
+            allSubTabs.forEach(t => t.classList.remove('active'));
+            // 2. Добавляем класс 'active' к НАЖАТОЙ вложенной вкладке
+            clickedSubTab.classList.add('active');
+            // 3. Получаем имя файла из атрибута 'data-iframe-src'
+            const iframeSrc = clickedSubTab.getAttribute('data-iframe-src');
+            // 4. Меняем 'src' у iframe
+            if (iframeSrc) {
+                historyIframe.src = iframeSrc;
+                console.log(`(Делегирование) Загрузка в iframe: ${iframeSrc}`);
+            } else {
+                console.warn("(Делегирование) Атрибут 'data-iframe-src' не найден у нажатой вкладки.");
+            }
+             // 5. Прокрутка контейнера вложенных вкладок
+             clickedSubTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+
+        // --- Сюда можно добавить обработку других кликов внутри контента, если нужно ---
+        // Например, для модальных окон галереи и т.п.
+        // const clickedGalleryImage = event.target.closest('.gallery-item img');
+        // if (clickedGalleryImage) {
+        //     // Логика открытия изображения
+        // }
+    });
+
+    // --- Инициализация при загрузке страницы ---
+    const initialActiveMainTab = document.querySelector('.tab.active');
+    if (initialActiveMainTab) {
+        loadMainPageContent(initialActiveMainTab.getAttribute('data-page'));
+    } else if (mainTabs.length > 0) {
         // Если нет активной по умолчанию, делаем активной первую и загружаем ее
-        tabs[0].classList.add('active');
-        loadPageContent(tabs[0].getAttribute('data-page'));
+        mainTabs[0].classList.add('active');
+        loadMainPageContent(mainTabs[0].getAttribute('data-page'));
     }
 
-    // --- (Опционально) Горизонтальная прокрутка вкладок колесиком мыши ---
-    if (tabsContainer) {
-        tabsContainer.addEventListener('wheel', function(e) {
-            // Только если есть горизонтальный скролл
+    // --- Горизонтальная прокрутка ОСНОВНЫХ вкладок колесиком мыши ---
+    if (mainTabsContainer) {
+        mainTabsContainer.addEventListener('wheel', function(e) {
             if (this.scrollWidth > this.clientWidth) {
-                // Предотвращаем вертикальную прокрутку страницы, только если колесо крутится НАД блоком вкладок
                 e.preventDefault();
-                // Прокручиваем контейнер вкладок влево/вправо
-                this.scrollLeft += e.deltaY > 0 ? 60 : -60; // Увеличил чувствительность
+                this.scrollLeft += e.deltaY > 0 ? 60 : -60;
             }
-        }, { passive: false }); // passive: false обязательно для preventDefault
+        }, { passive: false });
     }
-});
+
+}); // Конец DOMContentLoaded
