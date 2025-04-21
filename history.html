@@ -1,59 +1,94 @@
-<!-- Содержимое для раздела "История школы" -->
+<!-- ======================================================= -->
+<!-- Содержимое для раздела "История школы"                 -->
+<!-- Этот файл загружается в #content-placeholder в index.html -->
+<!-- ======================================================= -->
+
 <h2>История школы</h2>
 
-<!-- Вложенные вкладки -->
+<!-- Контейнер для вложенных вкладок (с возможностью горизонтальной прокрутки) -->
 <div class="sub-tabs-container">
     <div class="sub-tabs">
-        <!-- Указываем ПОЛНЫЕ имена файлов для iframe -->
-        <a href="#" class="sub-tab active" data-iframe-src="1.html">Часть 1 (1973-...)</a>
-        <a href="#" class="sub-tab" data-iframe-src="history-part2.html">Часть 2 (...)</a>
-        <a href="#" class="sub-tab" data-iframe-src="history-part3.html">Часть 3 (...)</a>
-        <!-- ... и так далее для всех 10 файлов ... -->
-        <a href="#" class="sub-tab" data-iframe-src="history-part10.html">Часть 10 (...)</a>
+        <!-- Вкладки для переключения между 11 файлами. data-iframe-src указывает имя файла -->
+        <a href="#" class="sub-tab active" data-iframe-src="1.html">Раздел 1</a>
+        <a href="#" class="sub-tab" data-iframe-src="2.html">Раздел 2</a>
+        <a href="#" class="sub-tab" data-iframe-src="3.html">Раздел 3</a>
+        <a href="#" class="sub-tab" data-iframe-src="4.html">Раздел 4</a>
+        <a href="#" class="sub-tab" data-iframe-src="5.html">Раздел 5</a>
+        <a href="#" class="sub-tab" data-iframe-src="6.html">Раздел 6</a>
+        <a href="#" class="sub-tab" data-iframe-src="7.html">Раздел 7</a>
+        <a href="#" class="sub-tab" data-iframe-src="8.html">Раздел 8</a>
+        <a href="#" class="sub-tab" data-iframe-src="9.html">Раздел 9</a>
+        <a href="#" class="sub-tab" data-iframe-src="10.html">Раздел 10</a>
+        <a href="#" class="sub-tab" data-iframe-src="11.html">Раздел 11</a>
     </div>
 </div>
 
-<!-- Iframe для отображения контента -->
+<!-- Контейнер для iframe (для стилизации рамки и т.д.) -->
 <div class="iframe-container">
-    <iframe id="history-iframe" src="1.html" frameborder="0" width="100%" height="600px">
-        Ваш браузер не поддерживает iframe.
+    <!-- Iframe, в который будут загружаться файлы 1.html - 11.html -->
+    <iframe id="history-iframe"
+            src="1.html"
+            frameborder="0"
+            width="100%"
+            height="600px"
+            title="Содержимое раздела истории школы">
+        Ваш браузер не поддерживает iframe. Пожалуйста, обновите браузер или включите поддержку iframe.
     </iframe>
 </div>
 
-<!-- Дополнительный JS ТОЛЬКО для этой страницы (или делегировать из основного) -->
+<!-- ======================================================= -->
+<!-- JavaScript ТОЛЬКО для управления вложенными вкладками   -->
+<!-- ======================================================= -->
 <script>
-    // Этот скрипт будет выполняться каждый раз, когда history.html загружается в #content-placeholder
+    // Используем самовызывающуюся функцию, чтобы изолировать область видимости
+    // этого скрипта. Он будет выполняться каждый раз при загрузке history.html.
     (function() {
-        const subTabs = document.querySelectorAll('.sub-tab');
-        const historyIframe = document.getElementById('history-iframe');
+        // Находим все вложенные вкладки и iframe на ТОЛЬКО ЧТО ЗАГРУЖЕННОМ фрагменте
+        const subTabs = document.querySelectorAll('.sub-tab'); // Ищем вкладки только внутри загруженного history.html
+        const historyIframe = document.getElementById('history-iframe'); // Ищем iframe только внутри загруженного history.html
 
-        if (!historyIframe) return; // Если iframe не найден, выходим
+        // Проверяем, что iframe найден (на всякий случай)
+        if (!historyIframe) {
+            console.error("Iframe с ID 'history-iframe' не найден в загруженном history.html");
+            return;
+        }
 
+        // Добавляем обработчик клика на каждую вложенную вкладку
         subTabs.forEach(tab => {
-            tab.addEventListener('click', function(e) {
-                e.preventDefault();
+            tab.addEventListener('click', function(event) {
+                event.preventDefault(); // Отменяем стандартный переход по ссылке
 
-                // Убираем active со всех вложенных вкладок
+                // 1. Убираем класс 'active' со всех вложенных вкладок
                 subTabs.forEach(t => t.classList.remove('active'));
-                // Добавляем active к нажатой
+
+                // 2. Добавляем класс 'active' к нажатой вкладке
                 this.classList.add('active');
 
-                // Получаем путь к файлу из data-атрибута
+                // 3. Получаем имя файла из атрибута 'data-iframe-src'
                 const iframeSrc = this.getAttribute('data-iframe-src');
+
+                // 4. Если имя файла получено, меняем атрибут 'src' у iframe
                 if (iframeSrc) {
-                    historyIframe.src = iframeSrc; // Меняем источник iframe
+                    historyIframe.src = iframeSrc;
+                    console.log(`Загрузка в iframe: ${iframeSrc}`); // Для отладки
+                } else {
+                    console.warn("Атрибут 'data-iframe-src' не найден у нажатой вкладки.");
                 }
+
+                // 5. (Опционально) Прокрутка контейнера вложенных вкладок, если активная не видна
+                 this.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
             });
         });
 
-        // Устанавливаем src для активной вкладки при загрузке (если нужно)
-        // const initialActiveSubTab = document.querySelector('.sub-tab.active');
-        // if (initialActiveSubTab) {
-        //     const initialSrc = initialActiveSubTab.getAttribute('data-iframe-src');
-        //     if (initialSrc) {
-        //        historyIframe.src = initialSrc;
-        //     }
-        // }
+        // Можно добавить код для установки начального src iframe при загрузке history.html,
+        // но так как мы уже указали src="1.html" в теге iframe и первая вкладка активна,
+        // это необязательно для первоначальной загрузки.
 
-    })(); // Самовызывающаяся функция для изоляции области видимости
+        console.log("Скрипт для вложенных вкладок history.html выполнен."); // Для отладки
+
+    })(); // Немедленно вызываем функцию
 </script>
+<!-- ======================================================= -->
+<!-- Конец содержимого для раздела "История школы"         -->
+<!-- ======================================================= -->
