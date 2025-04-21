@@ -1,43 +1,59 @@
+<!-- Содержимое для раздела "История школы" -->
 <h2>История школы</h2>
 
-<div class="section">
-    <h3>Юбилей школы</h3>
-    <p>История нашей школы началась в [год основания] году. За эти годы школа прошла долгий и славный путь, воспитав не одно поколение достойных граждан нашей страны.</p>
-
-    <div class="gallery">
-        <div class="gallery-item">
-            <img src="https://via.placeholder.com/300x200?text=Фото+школы+1" alt="Историческое фото школы">
-            <div class="gallery-caption">Здание школы, 1950-е годы</div>
-        </div>
-        <div class="gallery-item">
-            <img src="https://via.placeholder.com/300x200?text=Фото+школы+2" alt="Современное фото школы">
-            <div class="gallery-caption">Современный вид школы</div>
-        </div>
-        <div class="gallery-item">
-            <img src="https://via.placeholder.com/300x200?text=Выпускники" alt="Выпускники школы">
-            <div class="gallery-caption">Выпускники 1970 года</div>
-        </div>
-        <div class="gallery-item">
-            <img src="https://via.placeholder.com/300x200?text=Учителя" alt="Педагогический коллектив">
-            <div class="gallery-caption">Педагогический коллектив, 1980-е годы</div>
-        </div>
+<!-- Вложенные вкладки -->
+<div class="sub-tabs-container">
+    <div class="sub-tabs">
+        <!-- Указываем ПОЛНЫЕ имена файлов для iframe -->
+        <a href="#" class="sub-tab active" data-iframe-src="1.html">Часть 1 (1973-...)</a>
+        <a href="#" class="sub-tab" data-iframe-src="history-part2.html">Часть 2 (...)</a>
+        <a href="#" class="sub-tab" data-iframe-src="history-part3.html">Часть 3 (...)</a>
+        <!-- ... и так далее для всех 10 файлов ... -->
+        <a href="#" class="sub-tab" data-iframe-src="history-part10.html">Часть 10 (...)</a>
     </div>
 </div>
 
-<div class="section">
-    <h3>Книга на 50 лет</h3>
-    <p>К 50-летнему юбилею школы была издана памятная книга, в которой собраны воспоминания выпускников, учителей, исторические фотографии и документы. Предлагаем вам ознакомиться с электронной версией этого уникального издания.</p>
-
-    <div class="gallery">
-        <div class="gallery-item">
-            <img src="https://i.imgur.com/5ML39CS.jpeg" alt="Обложка юбилейной книги">
-            <div class="gallery-caption">Обложка юбилейной книги</div>
-        </div>
-        <div class="gallery-item">
-            <img src="https://via.placeholder.com/300x200?text=Страница+книги+1" alt="Страница из книги">
-            <div class="gallery-caption">Страница из юбилейной книги</div>
-        </div>
-    </div>
-
-    <p><a href="#" style="color: #d32f2f; text-decoration: underline; font-weight: bold;">Скачать электронную версию книги (PDF)</a></p>
+<!-- Iframe для отображения контента -->
+<div class="iframe-container">
+    <iframe id="history-iframe" src="1.html" frameborder="0" width="100%" height="600px">
+        Ваш браузер не поддерживает iframe.
+    </iframe>
 </div>
+
+<!-- Дополнительный JS ТОЛЬКО для этой страницы (или делегировать из основного) -->
+<script>
+    // Этот скрипт будет выполняться каждый раз, когда history.html загружается в #content-placeholder
+    (function() {
+        const subTabs = document.querySelectorAll('.sub-tab');
+        const historyIframe = document.getElementById('history-iframe');
+
+        if (!historyIframe) return; // Если iframe не найден, выходим
+
+        subTabs.forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Убираем active со всех вложенных вкладок
+                subTabs.forEach(t => t.classList.remove('active'));
+                // Добавляем active к нажатой
+                this.classList.add('active');
+
+                // Получаем путь к файлу из data-атрибута
+                const iframeSrc = this.getAttribute('data-iframe-src');
+                if (iframeSrc) {
+                    historyIframe.src = iframeSrc; // Меняем источник iframe
+                }
+            });
+        });
+
+        // Устанавливаем src для активной вкладки при загрузке (если нужно)
+        // const initialActiveSubTab = document.querySelector('.sub-tab.active');
+        // if (initialActiveSubTab) {
+        //     const initialSrc = initialActiveSubTab.getAttribute('data-iframe-src');
+        //     if (initialSrc) {
+        //        historyIframe.src = initialSrc;
+        //     }
+        // }
+
+    })(); // Самовызывающаяся функция для изоляции области видимости
+</script>
