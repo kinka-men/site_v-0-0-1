@@ -12,26 +12,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- ФУНКЦИЯ: Загрузка основного контента раздела ---
     async function loadMainPageContent(pageName) {
-        // Показываем индикатор загрузки
         contentPlaceholder.innerHTML = '<p>Загрузка...</p>';
         const fileName = `${pageName}.html`;
-
         try {
             const response = await fetch(fileName);
             if (!response.ok) {
-                // Выводим статус ошибки для лучшей диагностики
                 throw new Error(`Ошибка ${response.status} (${response.statusText}) при загрузке ${fileName}`);
             }
             const html = await response.text();
-            contentPlaceholder.innerHTML = html; // Вставляем загруженный HTML
-
-            // Если загружен раздел истории, инициализируем его специальную навигацию
+            contentPlaceholder.innerHTML = html;
             if (pageName === 'history') {
-                // Небольшая задержка может помочь, если элементы появляются не мгновенно
-                // Хотя с innerHTML обычно это не нужно, но на всякий случай
-                setTimeout(initializeHistoryNavigation, 0);
+                // Используем requestAnimationFrame для большей надежности,
+                // чтобы браузер успел отрисовать DOM перед инициализацией
+                requestAnimationFrame(initializeHistoryNavigation);
             }
-
         } catch (error) {
             console.error("Не удалось загрузить основной контент:", error);
             contentPlaceholder.innerHTML = `<p style="color: red; text-align: center;">Не удалось загрузить раздел '${pageName}'.<br><small>${error.message}</small></p>`;
@@ -40,50 +34,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- ФУНКЦИЯ: Обновление iframe и состояния навигации в истории ---
     function updateHistorySection(newIndex) {
-        // Ищем элементы навигации истории КАЖДЫЙ РАЗ внутри #content-placeholder
         const historyIframe = contentPlaceholder.querySelector('#history-iframe');
         const prevButton = contentPlaceholder.querySelector('#history-prev');
         const nextButton = contentPlaceholder.querySelector('#history-next');
         const titleButton = contentPlaceholder.querySelector('#history-title');
         const dropdown = contentPlaceholder.querySelector('#history-dropdown');
-        const dropdownLinks = contentPlaceholder.querySelectorAll('#history-dropdown a'); // Ссылки в dropdown
+        const dropdownLinks = contentPlaceholder.querySelectorAll('#history-dropdown a');
 
-        // Проверка наличия ОСНОВНЫХ элементов (iframe и кнопок)
         if (!historyIframe || !prevButton || !nextButton || !titleButton || !dropdown) {
-            console.error("Не найдены основные элементы навигации истории!");
-            return; // Прерываем выполнение, если чего-то не хватает
+            console.error("Не найдены основные элементы навигации истории при обновлении!");
+            // Можно добавить return; если критично, но лучше попытаться обновить что можно
         }
 
-        // Валидация индекса
         if (newIndex < 0 || newIndex >= historyTotalSections) {
             console.warn(`Попытка переключиться на неверный индекс раздела: ${newIndex}`);
             return;
         }
 
-        // Обновляем глобальный индекс
         currentHistorySectionIndex = newIndex;
-
-        // Формируем имя файла и заголовок
         const fileName = `${historyFilePrefix}${currentHistorySectionIndex + 1}${historyFileSuffix}`;
-        // Пытаемся получить реальный заголовок из соответствующей ссылки в dropdown
         let sectionTitle = `Раздел ${currentHistorySectionIndex + 1}`; // Заголовок по умолчанию
         if (dropdownLinks && dropdownLinks[currentHistorySectionIndex]) {
              sectionTitle = dropdownLinks[currentHistorySectionIndex].textContent || sectionTitle;
         }
 
+        // 1. Обновляем SRC у iframe (только если он найден)
+        if (historyIframe) {
+             historyIframe.src = fileName;
+        }
 
-        // 1. Обновляем SRC у iframe
-        historyIframe.src = fileName;
+        // 2. Обновляем текст кнопки-заголовка (только если она найдена)
+        if (titleButton) {
+            titleButton.textContent = sectionTitle;
+        }
 
-        // 2. Обновляем текст кнопки-заголовка
-        titleButton.textContent = sectionTitle;
+        // 3. Обновляем состояние disabled у кнопок-стрелок (только если они найдены)
+        if (prevButton) {
+             prevButton.disabled = (currentHistorySectionIndex === 0);
+        }
+         if (nextButton) {
+            nextButton.disabled = (currentHistorySectionIndex === historyTotalSections - 1);
+         }
 
-        // 3. Обновляем состояние disabled у кнопок-стрелок
-        prevButton.disabled = (currentHistorySectionIndex === 0);
-        nextButton.disabled = (currentHistorySectionIndex === historyTotalSections - 1);
-
-        // 4. Скрываем выпадающий список
-        dropdown.style.display = 'none';
+        // 4. Скрываем выпадающий список, удаляя класс (только если он найден)
+        if (dropdown) {
+             dropdown.classList.remove('visible');
+        }
 
         console.log(`История: Переключено на раздел ${currentHistorySectionIndex + 1} (${fileName})`);
     }
@@ -91,8 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- ФУНКЦИЯ: Инициализация навигации ИСТОРИИ (после загрузки history.html) ---
     function initializeHistoryNavigation() {
         console.log("Инициализация навигации истории...");
-        // Просто вызываем updateHistorySection с текущим (или начальным) индексом,
-        // чтобы установить правильное состояние кнопок и заголовка для 1.html
         updateHistorySection(currentHistorySectionIndex);
     }
 
@@ -103,12 +97,9 @@ document.addEventListener('DOMContentLoaded', function() {
             mainTabs.forEach(t => t.classList.remove('active'));
             this.classList.add('active');
             const pageName = this.getAttribute('data-page');
-
-            // Сбрасываем индекс истории при переходе НА или С раздела истории
             if (pageName === 'history') {
-                currentHistorySectionIndex = 0; // Всегда начинаем с первого при входе в раздел
+                currentHistorySectionIndex = 0; // Сброс индекса при входе
             }
-
             loadMainPageContent(pageName);
             this.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         });
@@ -116,61 +107,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- ОБРАБОТЧИК: Делегирование кликов ВНУТРИ #content-placeholder ---
     contentPlaceholder.addEventListener('click', function(event) {
-        const target = event.target; // Элемент, по которому кликнули
-
-        // Проверяем, находимся ли мы внутри навигации истории
-        const historyNav = target.closest('.history-navigation');
-        const dropdownLink = target.closest('#history-dropdown a');
-        const isClickInsideDropdown = target.closest('#history-dropdown');
+        const target = event.target;
 
         // --- Клик по стрелке НАЗАД ---
-        if (target.matches('#history-prev') || target.closest('#history-prev')) {
-            // Проверяем, что кнопка не отключена (на всякий случай)
-            if (!target.closest('button').disabled) {
-                 updateHistorySection(currentHistorySectionIndex - 1);
-            }
-        }
-        // --- Клик по стрелке ВПЕРЕД ---
-        else if (target.matches('#history-next') || target.closest('#history-next')) {
-             if (!target.closest('button').disabled) {
-                updateHistorySection(currentHistorySectionIndex + 1);
-             }
-        }
-        // --- Клик по НАЗВАНИЮ раздела (открыть/закрыть dropdown) ---
-        else if (target.matches('#history-title') || target.closest('#history-title')) {
-            const dropdown = contentPlaceholder.querySelector('#history-dropdown');
-            if (dropdown) {
-                const isHidden = dropdown.style.display === 'none' || dropdown.style.display === '';
-                dropdown.style.display = isHidden ? 'block' : 'none';
-                console.log(`Dropdown ${isHidden ? 'открыт' : 'закрыт'}`);
-            } else {
-                 console.error("Dropdown не найден при клике на title");
-            }
-        }
-        // --- Клик по ССЫЛКЕ внутри dropdown ---
-        else if (dropdownLink) {
-             event.preventDefault(); // Отменяем переход по '#'
-             const sectionIndex = parseInt(dropdownLink.getAttribute('data-section-index'), 10);
-             if (!isNaN(sectionIndex)) {
-                  updateHistorySection(sectionIndex); // Список закроется внутри этой функции
-             } else {
-                 console.warn("Не удалось получить section-index из ссылки dropdown");
-             }
-        }
-        // --- Клик ВНЕ активных элементов навигации истории (для закрытия dropdown) ---
-        else {
-             const dropdown = contentPlaceholder.querySelector('#history-dropdown');
-             // Закрываем, если он открыт И клик был не внутри самой навигации
-             if (dropdown && dropdown.style.display === 'block' && !historyNav && !isClickInsideDropdown) {
-                 dropdown.style.display = 'none';
-                 console.log("Dropdown закрыт кликом вне области");
-             }
+        const prevBtn = target.closest('#history-prev');
+        if (prevBtn && !prevBtn.disabled) {
+            updateHistorySection(currentHistorySectionIndex - 1);
+            return; // Выходим, чтобы не сработали другие проверки
         }
 
-        // Сюда можно будет добавить обработку других интерактивных элементов,
-        // загружаемых в #content-placeholder, например, для галереи.
-        // const clickedImage = target.closest('.gallery-item img');
-        // if (clickedImage) { /* ... */ }
+        // --- Клик по стрелке ВПЕРЕД ---
+        const nextBtn = target.closest('#history-next');
+        if (nextBtn && !nextBtn.disabled) {
+            updateHistorySection(currentHistorySectionIndex + 1);
+            return;
+        }
+
+        // --- Клик по НАЗВАНИЮ раздела (открыть/закрыть dropdown) ---
+        const titleBtn = target.closest('#history-title');
+        if (titleBtn) {
+            const dropdown = contentPlaceholder.querySelector('#history-dropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('visible');
+                console.log(`Dropdown ${dropdown.classList.contains('visible') ? 'открыт' : 'закрыт'}`);
+            } else { console.error("Dropdown не найден при клике на title"); }
+            return;
+        }
+
+        // --- Клик по ССЫЛКЕ внутри dropdown ---
+        const dropdownLink = target.closest('#history-dropdown a');
+        if (dropdownLink) {
+             event.preventDefault();
+             const sectionIndex = parseInt(dropdownLink.getAttribute('data-section-index'), 10);
+             if (!isNaN(sectionIndex)) {
+                  updateHistorySection(sectionIndex);
+             } else { console.warn("Не удалось получить section-index из ссылки dropdown"); }
+             return; // Предотвращаем закрытие по клику на ссылку
+        }
+
+        // --- Клик ВНЕ активных элементов навигации истории (для закрытия dropdown) ---
+        const dropdownVisible = contentPlaceholder.querySelector('#history-dropdown.visible');
+        // Закрываем, если он видимый И клик был не внутри самой навигации
+        if (dropdownVisible && !target.closest('.history-navigation')) {
+             dropdownVisible.classList.remove('visible');
+             console.log("Dropdown закрыт кликом вне области");
+        }
+
     });
 
 
@@ -179,11 +161,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (initialActiveMainTab) {
         loadMainPageContent(initialActiveMainTab.getAttribute('data-page'));
     } else if (mainTabs.length > 0) {
-        // Если нет активной по умолчанию, делаем активной первую и загружаем ее
         mainTabs[0].classList.add('active');
         loadMainPageContent(mainTabs[0].getAttribute('data-page'));
     } else {
-        // Если вообще нет вкладок, можно показать сообщение или загрузить что-то по умолчанию
         contentPlaceholder.innerHTML = '<p>Нет доступных разделов.</p>';
     }
 
@@ -191,12 +171,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Горизонтальная прокрутка ОСНОВНЫХ вкладок колесиком мыши ---
     if (mainTabsContainer) {
         mainTabsContainer.addEventListener('wheel', function(e) {
-            // Прокручиваем только если есть горизонтальный скролл
             if (this.scrollWidth > this.clientWidth) {
-                e.preventDefault(); // Предотвращаем вертикальный скролл страницы
-                this.scrollLeft += e.deltaY > 0 ? 60 : -60; // Скорость прокрутки
+                e.preventDefault();
+                this.scrollLeft += e.deltaY > 0 ? 60 : -60;
             }
-        }, { passive: false }); // passive: false нужен для preventDefault
+        }, { passive: false });
     }
 
 }); // Конец DOMContentLoaded
