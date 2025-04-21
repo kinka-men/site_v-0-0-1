@@ -510,4 +510,121 @@ footer {
     .content .memory-wall {
          grid-template-columns: 1fr; /* Одна колонка для стены памяти */
     }
+
+    /* === ДОБАВИТЬ ИЛИ ИЗМЕНИТЬ В КОНЦЕ style.css === */
+
+/* --- Media Queries (Adaptivity) --- */
+
+/* Для планшетов и небольших ноутбуков */
+@media (max-width: 992px) {
+     .content #history-iframe {
+        height: 550px; /* Немного уменьшим высоту */
+    }
+}
+
+/* Для планшетов в портретной ориентации и больших телефонов */
+@media (max-width: 768px) {
+    .logo h1 {
+        font-size: 22px;
+    }
+    .tabs-container {
+         padding: 0 15px;
+    }
+    .tab {
+        padding: 10px 15px;
+    }
+    .content {
+        padding: 20px;
+        margin: 20px auto;
+    }
+    .content .hero {
+        padding: 30px 15px;
+    }
+    .content .hero h2 {
+        font-size: 28px;
+    }
+    .content .hero p {
+        font-size: 18px;
+    }
+    .content .years {
+        font-size: 24px;
+    }
+    .content .gallery {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    .content .memory-wall {
+         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    /* Адаптация вложенных вкладок */
+     .content .sub-tab {
+        padding: 8px 14px; /* Слегка уменьшим паддинг */
+        font-size: 13px;  /* Уменьшим шрифт */
+        font-weight: 400; /* Можно сделать не жирным по умолчанию */
+    }
+     .content .sub-tab.active {
+         font-weight: 600; /* Активную делаем пожирнее */
+     }
+
+     /* Адаптация высоты iframe */
+     .content #history-iframe {
+        /* height: 500px; */ /* Вариант с пикселями */
+        height: 70vh; /* Вариант с высотой экрана - iframe займет 70% высоты окна */
+        min-height: 400px; /* Минимальная высота, чтобы не был слишком маленьким */
+    }
+}
+
+/* Для телефонов */
+@media (max-width: 600px) {
+     /* Можно еще уменьшить шрифт вкладок, если названия очень длинные */
+     .content .sub-tab {
+         padding: 8px 10px;
+         font-size: 12px;
+     }
+     .content .gallery {
+         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Мельче картинки */
+     }
+}
+
+/* Совсем маленькие телефоны */
+@media (max-width: 480px) {
+     .logo h1 {
+        font-size: 18px;
+    }
+     .logo p {
+        font-size: 14px;
+    }
+     .tab { /* Основные вкладки */
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+     .content {
+         padding: 15px; /* Меньше отступы */
+     }
+     .content h2 {
+        font-size: 20px;
+    }
+     .content .hero h2 {
+        font-size: 24px;
+    }
+     .content .hero p {
+        font-size: 16px;
+    }
+     .content .years {
+        font-size: 20px;
+    }
+      .content .gallery {
+        grid-template-columns: 1fr; /* Одна колонка для галереи */
+    }
+    .content .memory-wall {
+         grid-template-columns: 1fr; /* Одна колонка для стены памяти */
+    }
+    .content .sub-tab {
+         padding: 7px 9px;
+         font-size: 11px; /* Совсем мелкий шрифт, если нужно */
+     }
+      .content #history-iframe {
+         height: 65vh; /* Можно еще подстроить высоту */
+         min-height: 350px;
+     }
 }
