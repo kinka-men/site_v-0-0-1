@@ -386,4 +386,79 @@ footer {
     .content .memory-wall {
          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     }
+
+        /* --- Стили для вложенных вкладок внутри .content --- */
+    .content .sub-tabs-container {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+        overflow-x: auto; /* Горизонтальный скролл для вложенных вкладок */
+        white-space: nowrap;
+        scrollbar-width: thin;
+        scrollbar-color: #ccc #eee;
+    }
+    
+    .content .sub-tabs {
+        display: inline-flex; /* Чтобы скролл работал */
+    }
+    
+    .content .sub-tab {
+        padding: 8px 15px;
+        margin-right: 8px;
+        cursor: pointer;
+        border: 1px solid #ddd;
+        border-bottom: none;
+        border-radius: 4px 4px 0 0;
+        background-color: #f9f9f9;
+        color: #666;
+        font-size: 14px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        text-decoration: none;
+        flex-shrink: 0;
+    }
+    
+    .content .sub-tab:hover {
+        background-color: #eee;
+        color: #333;
+    }
+    
+    .content .sub-tab.active {
+        background-color: white;
+        color: #d32f2f; /* Красный цвет, как у основных заголовков */
+        border-color: #ddd;
+        border-bottom: 1px solid white; /* Скрывает нижнюю границу контейнера */
+        position: relative;
+        top: 1px; /* Сдвигаем чуть вниз для эффекта */
+        font-weight: bold;
+    }
+    
+    /* Стили для контейнера iframe */
+    .content .iframe-container {
+        margin-top: -1px; /* Чтобы примкнуть к нижней границе активной вкладки */
+        border: 1px solid #ddd; /* Рамка вокруг iframe */
+        border-radius: 0 0 5px 5px; /* Скруглим нижние углы */
+        overflow: hidden; /* Чтобы скрыть углы iframe, если он сам не скруглен */
+    }
+    
+    .content #history-iframe {
+        display: block; /* Убрать лишний отступ снизу */
+        /* Высоту лучше задавать здесь или прямо в теге iframe */
+        /* Можно попробовать задать высоту динамически через JS, но это сложнее */
+    }
+    
+    /* Стили для скроллбара вложенных вкладок */
+    .content .sub-tabs-container::-webkit-scrollbar {
+        height: 6px;
+    }
+    .content .sub-tabs-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+    .content .sub-tabs-container::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 3px;
+    }
+    .content .sub-tabs-container::-webkit-scrollbar-thumb:hover {
+        background: #aaa;
+    }
 }
