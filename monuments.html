@@ -1,1 +1,84 @@
+<!-- ======================================================= -->
+<!-- Содержимое для раздела "Видеогалерея"                 -->
+<!-- Этот файл загружается в #content-placeholder в index.html -->
+<!-- ======================================================= -->
 
+<h2>Видеогалерея</h2>
+
+<div class="section">
+    <p>В этом разделе собраны видеоматериалы, рассказывающие об истории школы, важных событиях, проектах и достижениях наших учеников и учителей.</p>
+</div>
+
+<div class="gallery video-gallery"> <!-- Можно добавить доп. класс video-gallery для специфичных стилей, если понадобится -->
+
+    <!-- ПРИМЕР 1: Видео с YouTube (Используем .video-container для адаптивности) -->
+    <div class="gallery-item">
+        <div class="video-container">
+            <iframe
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ" <!-- ЗАМЕНИТЬ ССЫЛКУ! -->
+                title="Пример видео с YouTube"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+            </iframe>
+        </div>
+        <div class="gallery-caption">
+            Название видео 1 (например, "Юбилей школы")
+        </div>
+    </div>
+
+    <!-- ПРИМЕР 2: Локальное видео (файл лежит на сервере рядом) -->
+    <div class="gallery-item">
+        <!-- Для локального видео НЕ обязательно использовать .video-container,
+             но стили .gallery-item img, video позаботятся о размере -->
+        <video controls poster="path/to/your/video-preview-2.jpg"> <!-- ЗАМЕНИТЬ ПУТЬ К ПРЕВЬЮ! -->
+            <source src="path/to/your/local-video-2.mp4" type="video/mp4"> <!-- ЗАМЕНИТЬ ПУТЬ К ВИДЕО! -->
+            <!-- Можно добавить другие форматы для совместимости -->
+            <!-- <source src="path/to/your/local-video-2.webm" type="video/webm"> -->
+            Ваш браузер не поддерживает встроенные видео. Вы можете <a href="path/to/your/local-video-2.mp4">скачать видео</a>.
+        </video>
+        <div class="gallery-caption">
+            Название видео 2 (например, "Проект 'Лица Победы'")
+        </div>
+    </div>
+
+    <!-- ПРИМЕР 3: Еще одно видео с YouTube -->
+    <div class="gallery-item">
+        <div class="video-container">
+            <iframe
+                src="https://www.youtube.com/embed/yPYZpwSpKmA" <!-- ЗАМЕНИТЬ ССЫЛКУ! -->
+                title="Еще один пример видео"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+            </iframe>
+        </div>
+        <div class="gallery-caption">
+            Название видео 3 (например, "Рассказ ученика о ветеране")
+        </div>
+    </div>
+
+    <!-- МЕСТО ДЛЯ ДОБАВЛЕНИЯ СЛЕДУЮЩИХ ВИДЕО -->
+    <!-- Просто скопируй один из блоков .gallery-item выше и измени содержимое -->
+    <!--
+    <div class="gallery-item">
+        ... ваш iframe или video тег ...
+        <div class="gallery-caption">
+            Название видео 4
+        </div>
+    </div>
+    -->
+
+</div> <!-- Конец .gallery -->
+
+<!-- Можно добавить еще секции с текстом или другие галереи ниже, если нужно -->
+<!--
+<div class="section">
+    <h3>Тематические подборки</h3>
+    <p>Здесь могут быть ссылки на плейлисты или другие ресурсы.</p>
+</div>
+-->
+
+<!-- ======================================================= -->
+<!-- Конец содержимого для раздела "Видеогалерея"         -->
+<!-- ======================================================= -->
