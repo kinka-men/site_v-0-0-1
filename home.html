@@ -1,14 +1,191 @@
-<div class="hero">
-    <div class="hero-content">
-        <h2>Виртуальный музей школы №17</h2>
-        <p>Сохраняем память о подвиге народа</p>
-        <div class="years">1945-2025</div>
-    </div>
-</div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Виртуальный музей школы №17</title>
+    <style>
+        /* --- Общие стили --- */
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
 
-<div class="section">
-    <h2>О нашем музее</h2>
-    <p>Добро пожаловать в виртуальный музей МАОУ СОШ №17 города Улан-Удэ "Хранители Памяти". Наш музей создан с целью сохранения исторической памяти о Великой Отечественной войне, о подвиге нашего народа и о вкладе жителей Бурятии в Великую Победу.</p>
-    <p>В разделах нашего музея вы найдете информацию об истории школы, памятниках республики Бурятия, архивные материалы уголка боевой славы, предметы военной эпохи, истории о войне, связанные с нашей школой, а также материалы, посвященные специальной военной операции и памяти выпускников нашей школы.</p>
-    <p>Приглашаем вас совершить виртуальное путешествие по страницам истории и памяти!</p>
-</div>
+        /* --- Стили для секции "hero" --- */
+        .hero {
+            position: relative; /* База для absolute позиционирования */
+            background-color: #fffbeb;
+            padding: 50px 20px;
+            text-align: center;
+            overflow: hidden; /* Важно, если изображение выходит за края */
+            min-height: 250px;
+            border-bottom: 2px solid #e43d30;
+            margin-bottom: 20px;
+        }
+
+        /* --- Стили для изображения (Десктоп: еще левее) --- */
+        .hero .georgian-ribbon {
+            position: absolute;
+            z-index: 1; /* Под текстом на десктопе */
+            width: auto;
+            /* === ИЗМЕНЕНИЯ ДЛЯ ДЕСКТОПА === */
+            max-width: 35%;  /* Можно чуть уменьшить */
+            height: 85%;    /* Можно чуть увеличить высоту */
+            max-height: 300px;
+            top: 50%;
+            left: 1%;       /* Еще левее */
+            transform: translateY(-50%); /* Только вертикальное центрирование */
+            /* === КОНЕЦ ИЗМЕНЕНИЙ === */
+            opacity: 0.9;
+            transition: all 0.3s ease; /* Плавный переход для адаптивности */
+        }
+
+        /* --- Стили для текстового контента --- */
+        .hero .hero-content {
+            position: relative;
+            z-index: 2; /* Текст НАД изображением на десктопе */
+            display: inline-block;
+            vertical-align: middle;
+             /* Добавим отступ справа, чтобы текст не прилипал к левому краю при смещении картинки */
+            padding-left: 5%;
+            padding-right: 5%;
+        }
+
+        .hero .hero-content h2 {
+            color: #d73a11;
+            font-size: 2.2em;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-weight: bold;
+            -webkit-text-stroke: 1px white;
+            text-stroke: 1px white;
+            paint-order: stroke fill;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero .hero-content p {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #333;
+            -webkit-text-stroke: 0.8px white;
+            text-stroke: 0.8px white;
+            paint-order: stroke fill;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+        }
+
+        .hero .hero-content .years {
+            display: inline-block;
+            background-color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #d73a11;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* --- Стили для секции "О нашем музее" --- */
+        .section {
+            padding: 20px;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            line-height: 1.6;
+        }
+
+        .section h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .section p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        /* --- Адаптивность (Маленькие экраны) --- */
+        @media (max-width: 1100px) {
+             .hero {
+                min-height: 200px;
+                padding-top: 30px;
+                padding-bottom: 30px;
+             }
+
+            /* === ИЗМЕНЕНИЯ ДЛЯ МОБИЛЬНЫХ === */
+            .hero .georgian-ribbon {
+                 z-index: 3;      /* Иконка ПОВЕРХ текста */
+                 /* Размеры иконки */
+                 width: auto;     /* Сбрасываем для корректного max-width/height */
+                 height: auto;    /* Сбрасываем для корректного max-width/height */
+                 max-width: 60px;
+                 max-height: 60px;
+                 /* Позиционирование в левом нижнем углу */
+                 top: auto;       /* Убираем позиционирование от верха */
+                 left: 15px;      /* Отступ слева */
+                 bottom: 15px;    /* Отступ снизу */
+                 transform: none; /* Убираем трансформацию */
+                 opacity: 1;      /* Можно сделать полностью непрозрачной */
+            }
+             /* === КОНЕЦ ИЗМЕНЕНИЙ === */
+
+            .hero .hero-content {
+                 padding-left: 10px; /* Уменьшаем отступы для мобильных */
+                 padding-right: 10px;
+                 /* Важно: текст может оказаться ПОД иконкой в углу */
+            }
+
+            .hero .hero-content h2 {
+                font-size: 1.6em;
+                 -webkit-text-stroke-width: 0.8px;
+                 text-stroke-width: 0.8px;
+            }
+            .hero .hero-content p {
+                font-size: 1.0em;
+                 -webkit-text-stroke-width: 0.5px;
+                 text-stroke-width: 0.5px;
+            }
+             .hero .hero-content .years {
+                 font-size: 0.9em;
+                 padding: 6px 15px;
+             }
+            .section {
+                padding: 15px;
+            }
+        }
+
+         /* Можно добавить еще один breakpoint для очень маленьких экранов, если нужно */
+         /* @media (max-width: 480px) { ... } */
+
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <!-- Изображение (Орден Отечественной войны и лента) -->
+        <!-- !!! ЗАМЕНИТЕ "path/to/your/order-image.png" НА ПУТЬ К ВАШЕМУ ИЗОБРАЖЕНИЮ !!! -->
+        <img src="https://archive.org/download/image2_20250424/image2.png" alt="Символ Победы" class="georgian-ribbon">
+
+        <div class="hero-content">
+            <h2>Виртуальный музей школы №17</h2>
+            <p>Сохраняем память о подвиге народа</p>
+            <div class="years">1945-2025</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>О нашем музее</h2>
+        <p>Добро пожаловать в виртуальный музей МАОУ СОШ №17 города Улан-Удэ "Хранители Памяти". Наш музей создан с целью сохранения исторической памяти о Великой Отечественной войне, о подвиге нашего народа и о вкладе жителей Бурятии в Великую Победу.</p>
+        <p>В разделах нашего музея вы найдете информацию об истории школы, памятниках республики Бурятия, архивные материалы уголка боевой славы, предметы военной эпохи, истории о войне, связанные с нашей школой, а также материалы, посвященные специальной военной операции и памяти выпускников нашей школы.</p>
+        <p>Приглашаем вас совершить виртуальное путешествие по страницам истории и памяти!</p>
+    </div>
+
+</body>
+</html>
