@@ -9,170 +9,100 @@
     <p>В этом разделе собраны видеоматериалы, рассказывающие о памятниках республики.</p>
 </div>
 
-<div class="gallery video-gallery"> <!-- Можно добавить доп. класс video-gallery для специфичных стилей, если понадобится -->
+<div class="gallery video-gallery"> <!-- Класс video-gallery для специфичных стилей -->
 
-    <!-- ПРИМЕР 1: Видео с YouTube (Используем .video-container для адаптивности) -->
+    <!-- Видео 1 -->
     <div class="gallery-item">
         <div class="video-container">
-            <iframe src="https://archive.org/serve/small_202504/%D0%90%D0%90%D0%90%D0%90%D0%90_small.mp4" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
+            <video
+                controls
+                preload="metadata" <!-- Загружать только метаданные (размер, длительность) и постер -->
+                poster="https://archive.org/services/img/small_202504"
+                style="width: 100%; height: 100%; object-fit: cover;" <!-- Стили для заполнения контейнера, можно вынести в CSS -->
+                >
+                <source src="https://ia800708.us.archive.org/10/items/small_202504/%D0%90%D0%90%D0%90%D0%90%D0%90_small.mp4" type="video/mp4">
+                Ваш браузер не поддерживает тег video. Скачайте видео по <a href="https://archive.org/download/small_202504/ААААА_small.mp4">ссылке</a>.
+            </video>
         </div>
         <div class="gallery-caption">
-           Радик и его друзья
+           Радик и его друзья <!-- ЗАМЕНИТЕ НАЗВАНИЕ! -->
         </div>
     </div>
 
+    <!-- Видео 2 -->
     <div class="gallery-item">
         <div class="video-container">
-            <iframe src="https://ia800501.us.archive.org/1/items/img-0829-small/IMG_0829_small.mp4" width="640" height="480" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen></iframe>
+            <video
+                controls
+                preload="metadata"
+                poster="https://archive.org/services/img/img-0829-small"
+                style="width: 100%; height: 100%; object-fit: cover;"
+                >
+                <source src="https://archive.org/download/img-0829-small/IMG_0829_small.mp4" type="video/mp4">
+                Ваш браузер не поддерживает тег video. Скачайте видео по <a href="https://archive.org/download/img-0829-small/IMG_0829_small.mp4">ссылке</a>.
+            </video>
         </div>
         <div class="gallery-caption">
-           Радик и его друзья
+           Видео с квадрокоптера (Пример) <!-- ЗАМЕНИТЕ НАЗВАНИЕ! -->
         </div>
     </div>
 
-    <!-- ПРИМЕР 3: Еще одно видео с YouTube -->
+    <!-- Видео 3 -->
     <div class="gallery-item">
         <div class="video-container">
-            <iframe
-                src="https://archive.org/serve/online-video-cutter.com-small/%D0%93%D0%B5%D1%80%D0%BE%D0%B8%20%D1%81%D0%B5%D0%BB%D0%B0%20%D0%A3%D0%BB%D1%8E%D0%BD%20%28online-video-cutter.com%29_small.mp4" <!-- ЗАМЕНИТЬ ССЫЛКУ! -->
-                title="Еще один пример видео"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen>
-            </iframe>
+             <video
+                controls
+                preload="metadata"
+                poster="https://archive.org/services/img/online-video-cutter.com-small"
+                style="width: 100%; height: 100%; object-fit: cover;"
+                >
+                <!-- Используем URL encoded ссылку -->
+                <source src="https://archive.org/download/online-video-cutter.com-small/Герои%20села%20Улюн%20(online-video-cutter.com)_small.mp4" type="video/mp4">
+                Ваш браузер не поддерживает тег video. Скачайте видео по <a href="https://archive.org/download/online-video-cutter.com-small/Герои%20села%20Улюн%20(online-video-cutter.com)_small.mp4">ссылке</a>.
+            </video>
         </div>
         <div class="gallery-caption">
-            Название видео 3 
+            Герои села Улюн (Пример) <!-- ЗАМЕНИТЕ НАЗВАНИЕ! -->
         </div>
     </div>
 
+    <!-- Видео 4 -->
     <div class="gallery-item">
         <div class="video-container">
-            <iframe
-                src="
-https://archive.org/serve/small_20250423/%D0%92%D0%BE%D0%B9%D0%BD%D0%B0%20%D0%B2%20%D0%B8%D1%81%D1%82%D0%BE%D1%80%D0%B8%D0%B8%20%D0%BC%D0%BE%D0%B5%D0%B9%20%D1%81%D0%B5%D0%BC%D1%8C%D0%B8_small.mp4" <!-- ЗАМЕНИТЬ ССЫЛКУ! -->
-                title="Пример видео с YouTube"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen>
-            </iframe>
+            <video
+                controls
+                preload="metadata"
+                poster="https://archive.org/services/img/small_20250423"
+                style="width: 100%; height: 100%; object-fit: cover;"
+                >
+                 <!-- Используем URL encoded ссылку -->
+                <source src="https://archive.org/download/small_20250423/Война%20в%20истории%20моей%20семьи_small.mp4" type="video/mp4">
+                 Ваш браузер не поддерживает тег video. Скачайте видео по <a href="https://archive.org/download/small_20250423/Война%20в%20истории%20моей%20семьи_small.mp4">ссылке</a>.
+            </video>
         </div>
         <div class="gallery-caption">
-            Название видео 1
-        </div>
-    </div>
-
-    <div class="gallery-item">
-        <div class="video-container">
-            <iframe
-                src="
-https://ia801605.us.archive.org/12/items/small_20250423/%D0%92%D0%BE%D0%B9%D0%BD%D0%B0%20%D0%B2%20%D0%B8%D1%81%D1%82%D0%BE%D1%80%D0%B8%D0%B8%20%D1%81%D0%B5%D0%BC%D1%8C%D0%B8_small.mp4" <!-- ЗАМЕНИТЬ ССЫЛКУ! -->
-                title="Пример видео с YouTube"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen>
-            </iframe>
-        </div>
-        <div class="gallery-caption">
-            Название видео 1
-        </div>
-    </div>
-
-    <div class="gallery-item">
-        <div class="video-container">
-            <iframe
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ" <!-- ЗАМЕНИТЬ ССЫЛКУ! -->
-                title="Пример видео с YouTube"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen>
-            </iframe>
-        </div>
-        <div class="gallery-caption">
-            Название видео 1
-        </div>
-    </div>
-
-    <div class="gallery-item">
-        <div class="video-container">
-            <iframe
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ" <!-- ЗАМЕНИТЬ ССЫЛКУ! -->
-                title="Пример видео с YouTube"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen>
-            </iframe>
-        </div>
-        <div class="gallery-caption">
-            Название видео 1
-        </div>
-    </div>
-
-    <div class="gallery-item">
-        <div class="video-container">
-            <iframe
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ" <!-- ЗАМЕНИТЬ ССЫЛКУ! -->
-                title="Пример видео с YouTube"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen>
-            </iframe>
-        </div>
-        <div class="gallery-caption">
-            Название видео 1
-        </div>
-    </div>
-
-    <div class="gallery-item">
-        <div class="video-container">
-            <iframe
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ" <!-- ЗАМЕНИТЬ ССЫЛКУ! -->
-                title="Пример видео с YouTube"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen>
-            </iframe>
-        </div>
-        <div class="gallery-caption">
-            Название видео 1
-        </div>
-    </div>
-
-    <div class="gallery-item">
-        <div class="video-container">
-            <iframe
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ" <!-- ЗАМЕНИТЬ ССЫЛКУ! -->
-                title="Пример видео с YouTube"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen>
-            </iframe>
-        </div>
-        <div class="gallery-caption">
-            Название видео 1
+            Война в истории моей семьи (Пример) <!-- ЗАМЕНИТЕ НАЗВАНИЕ! -->
         </div>
     </div>
 
     <!-- МЕСТО ДЛЯ ДОБАВЛЕНИЯ СЛЕДУЮЩИХ ВИДЕО -->
-    <!-- Просто скопируй один из блоков .gallery-item выше и измени содержимое -->
+    <!-- Скопируйте блок .gallery-item, замените IDENTIFIER и FILENAME в poster и source -->
+    <!-- Не забудьте правильно закодировать FILENAME в URL (пробелы -> %20 и т.д.) -->
     <!--
     <div class="gallery-item">
-        ... ваш iframe или video тег ...
+        <div class="video-container">
+            <video controls preload="metadata" poster="https://archive.org/services/img/ВАШ_ИДЕНТИФИКАТОР" style="width: 100%; height: 100%; object-fit: cover;">
+                <source src="https://archive.org/download/ВАШ_ИДЕНТИФИКАТОР/ВАШ_ЗАКОДИРОВАННЫЙ_FILENAME.mp4" type="video/mp4">
+                Ваш браузер не поддерживает тег video.
+            </video>
+        </div>
         <div class="gallery-caption">
-            Название видео 4
+            Название нового видео
         </div>
     </div>
     -->
 
 </div> <!-- Конец .gallery -->
-
-<!-- Можно добавить еще секции с текстом или другие галереи ниже, если нужно -->
-<!--
-<div class="section">
-    <h3>Тематические подборки</h3>
-    <p>Здесь могут быть ссылки на плейлисты или другие ресурсы.</p>
-</div>
--->
 
 <!-- ======================================================= -->
 <!-- Конец содержимого для раздела "Видеогалерея"         -->
