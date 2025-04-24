@@ -1,1 +1,109 @@
+<!-- ======================================================= -->
+<!-- Содержимое для раздела "Видеогалерея"                 -->
+<!-- Этот файл загружается в #content-placeholder в index.html -->
+<!-- ======================================================= -->
 
+<h2>Видеогалерея</h2>
+
+<div class="section">
+    <p>В этом разделе собраны видеоматериалы, рассказывающие о памятниках республики.</p>
+</div>
+
+<div class="gallery video-gallery"> <!-- Класс video-gallery для специфичных стилей -->
+
+    <!-- Видео 1 -->
+    <div class="gallery-item">
+        <div class="video-container">
+            <video
+                controls
+                preload="auto" <!-- Загружать только метаданные (размер, длительность) и постер -->
+                poster="https://archive.org/services/img/small_202504"
+                style="width: 100%; height: 100%; object-fit: cover;" <!-- Стили для заполнения контейнера, можно вынести в CSS -->
+                >
+                <source src="https://ia800708.us.archive.org/10/items/small_202504/%D0%90%D0%90%D0%90%D0%90%D0%90_small.mp4" type="video/mp4">
+                Ваш браузер не поддерживает тег video. Скачайте видео по <a href="https://archive.org/download/small_202504/ААААА_small.mp4">ссылке</a>.
+            </video>
+        </div>
+        <div class="gallery-caption">
+           Радик и его друзья <!-- ЗАМЕНИТЕ НАЗВАНИЕ! -->
+        </div>
+    </div>
+
+    <!-- Видео 2 -->
+    <div class="gallery-item">
+        <div class="video-container">
+            <video
+                controls
+                preload="auto"
+                poster="https://archive.org/services/img/img-0829-small"
+                style="width: 100%; height: 100%; object-fit: cover;"
+                >
+                <source src="https://archive.org/download/img-0829-small/IMG_0829_small.mp4" type="video/mp4">
+                Ваш браузер не поддерживает тег video. Скачайте видео по <a href="https://archive.org/download/img-0829-small/IMG_0829_small.mp4">ссылке</a>.
+            </video>
+        </div>
+        <div class="gallery-caption">
+           Видео с квадрокоптера (Пример) <!-- ЗАМЕНИТЕ НАЗВАНИЕ! -->
+        </div>
+    </div>
+
+    <!-- Видео 3 -->
+    <div class="gallery-item">
+        <div class="video-container">
+             <video
+                controls
+                preload="auto"
+                poster="https://archive.org/services/img/online-video-cutter.com-small"
+                style="width: 100%; height: 100%; object-fit: cover;"
+                >
+                <!-- Используем URL encoded ссылку -->
+                <source src="https://archive.org/download/online-video-cutter.com-small/Герои%20села%20Улюн%20(online-video-cutter.com)_small.mp4" type="video/mp4">
+                Ваш браузер не поддерживает тег video. Скачайте видео по <a href="https://archive.org/download/online-video-cutter.com-small/Герои%20села%20Улюн%20(online-video-cutter.com)_small.mp4">ссылке</a>.
+            </video>
+        </div>
+        <div class="gallery-caption">
+            Герои села Улюн (Пример) <!-- ЗАМЕНИТЕ НАЗВАНИЕ! -->
+        </div>
+    </div>
+
+    <!-- Видео 4 -->
+    <div class="gallery-item">
+        <div class="video-container">
+            <video
+                controls
+                preload="auto"
+                poster="https://archive.org/services/img/small_20250423"
+                style="width: 100%; height: 100%; object-fit: cover;"
+                >
+                 <!-- Используем URL encoded ссылку -->
+                <source src="https://archive.org/download/small_20250423/Война%20в%20истории%20моей%20семьи_small.mp4" type="video/mp4">
+                 Ваш браузер не поддерживает тег video. Скачайте видео по <a href="https://archive.org/download/small_20250423/Война%20в%20истории%20моей%20семьи_small.mp4">ссылке</a>.
+            </video>
+        </div>
+        <div class="gallery-caption">
+            Война в истории моей семьи (Пример) <!-- ЗАМЕНИТЕ НАЗВАНИЕ! -->
+        </div>
+    </div>
+
+    <!-- МЕСТО ДЛЯ ДОБАВЛЕНИЯ СЛЕДУЮЩИХ ВИДЕО -->
+    <!-- Скопируйте блок .gallery-item, замените IDENTIFIER и FILENAME в poster и source -->
+    <!-- Не забудьте правильно закодировать FILENAME в URL (пробелы -> %20 и т.д.) -->
+    <!--
+    <div class="gallery-item">
+        <div class="video-container">
+            <video controls preload="metadata" poster="https://archive.org/services/img/ВАШ_ИДЕНТИФИКАТОР" style="width: 100%; height: 100%; object-fit: cover;">
+                <source src="https://archive.org/download/ВАШ_ИДЕНТИФИКАТОР/ВАШ_ЗАКОДИРОВАННЫЙ_FILENAME.mp4" type="video/mp4">
+                Ваш браузер не поддерживает тег video.
+            </video>
+        </div>
+        <div class="gallery-caption">
+            Название нового видео
+        </div>
+    </div>
+    -->
+
+</div> <!-- Конец .gallery -->
+
+<!-- ======================================================= -->
+<!-- Конец содержимого для раздела "Видеогалерея"         -->
+<!-- ======================================================= -->
