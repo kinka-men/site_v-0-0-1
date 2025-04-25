@@ -2,13 +2,18 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+<<<<<<< HEAD
   <title>Война в истории моей семьи — Аккордеон details</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+=======
+  <title>Аккордеоны: Видеогалерея и Презентации</title>
+>>>>>>> ce92add209017c9818742ebf72b58a12b30140ad
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f0f0f0;
       margin: 0;
+<<<<<<< HEAD
       padding: 20px;
     }
     h2 {
@@ -256,20 +261,153 @@
 
   <details class="accordion">
     <summary><span class="triangle"></span>Презентации</summary>
+=======
+      padding: 40px 0;
+    }
+    .my-accordion {
+      margin: 20px auto;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px #0001;
+      background: #fff;
+      max-width: 900px;
+    }
+    .my-accordion-header {
+      background: #f0f0f0;
+      cursor: pointer;
+      padding: 18px 24px;
+      font-size: 1.2em;
+      font-weight: bold;
+      border-bottom: 1px solid #ddd;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .my-accordion-header:hover {
+      background: #e0e0e0;
+    }
+    .my-accordion-content {
+      display: none;
+      padding: 16px 24px 24px 24px;
+      background: #fff;
+    }
+    .my-accordion.open .my-accordion-content {
+      display: block;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .gallery-item {
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+    }
+    .video-container, .pdf-container {
+      width: 100%;
+      height: 220px;
+      background: #e0e0e0;
+      border-radius: 5px 5px 0 0;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .video-container video, .pdf-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      object-fit: contain;
+      background: #000;
+    }
+    .gallery-caption {
+      padding: 10px 12px;
+      background-color: white;
+      text-align: center;
+      color: #333;
+      font-size: 14px;
+      width: 100%;
+      border-top: 1px solid #eee;
+    }
+    @media (max-width: 600px) {
+      .gallery {
+        grid-template-columns: 1fr;
+      }
+      .video-container, .pdf-container {
+        height: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="my-accordion" id="video-accordion">
+  <div class="my-accordion-header">Видеогалерея</div>
+  <div class="my-accordion-content">
+    <h2>Видеогалерея</h2>
+    <div class="section">
+      <p>В этом разделе собраны видеоматериалы, рассказывающие о памятниках республики.</p>
+    </div>
+    <div class="gallery video-gallery">
+      <!-- Видео 1 -->
+      <div class="gallery-item">
+        <div class="video-container">
+          <video controls preload="auto" poster="https://archive.org/services/img/small_202504">
+            <source src="https://ia800708.us.archive.org/10/items/small_202504/%D0%90%D0%90%D0%90%D0%90%D0%90_small.mp4" type="video/mp4">
+            Ваш браузер не поддерживает тег video.
+          </video>
+        </div>
+        <div class="gallery-caption">Радик и его друзья</div>
+      </div>
+      <!-- Видео 2 -->
+      <div class="gallery-item">
+        <div class="video-container">
+          <video controls preload="auto" poster="https://archive.org/services/img/img-0829-small">
+            <source src="https://archive.org/download/img-0829-small/IMG_0829_small.mp4" type="video/mp4">
+            Ваш браузер не поддерживает тег video.
+          </video>
+        </div>
+        <div class="gallery-caption">Видео с квадрокоптера (Пример)</div>
+      </div>
+      <!-- Добавь еще видео по аналогии -->
+    </div>
+  </div>
+</div>
+
+<div class="my-accordion" id="pdf-accordion">
+  <div class="my-accordion-header">Презентации</div>
+  <div class="my-accordion-content">
+    <h2>Презентации</h2>
+    <div class="section">
+      <p>В этом разделе собраны презентации по истории и культуре республики.</p>
+    </div>
+>>>>>>> ce92add209017c9818742ebf72b58a12b30140ad
     <div class="gallery pdf-gallery">
       <!-- Презентация 1 -->
       <div class="gallery-item">
         <div class="pdf-container">
+<<<<<<< HEAD
           <iframe src="https://drive.google.com/file/d/1y6eYkBo_rLdEnjo_LZSVRMI9iLmFqPSA/preview" allowfullscreen></iframe>
         </div>
         <div class="gallery-caption">
           Зорькин Илья Иванович<br>
           <a href="https://drive.google.com/file/d/1y6eYkBo_rLdEnjo_LZSVRMI9iLmFqPSA/view" target="_blank" rel="noopener" class="open-btn">Открыть в новом окне</a>
+=======
+          <iframe src="https://drive.google.com/file/d/1y6eYkBo_rLdEnjo_LZSVRMI9iLmFqPSA/preview"></iframe>
+        </div>
+        <div class="gallery-caption">
+          Карнакова Ника, МАОУ СОШ №17, "Презентация по истории"
+>>>>>>> ce92add209017c9818742ebf72b58a12b30140ad
         </div>
       </div>
       <!-- Презентация 2 -->
       <div class="gallery-item">
         <div class="pdf-container">
+<<<<<<< HEAD
           <iframe src="https://drive.google.com/file/d/1EtA2p5xWN4AF09cKYUIaoKJSxxtTSwAc/preview" allowfullscreen></iframe>
         </div>
         <div class="gallery-caption">
@@ -303,3 +441,36 @@
 
 </body>
 </html>
+=======
+          <iframe src="https://drive.google.com/file/d/ID_ВТОРОГО_ФАЙЛА/preview"></iframe>
+        </div>
+        <div class="gallery-caption">
+          Название второй презентации
+        </div>
+      </div>
+      <!-- Добавь еще презентации по аналогии -->
+    </div>
+  </div>
+</div>
+
+<script>
+function initMyAccordions() {
+  document.querySelectorAll('.my-accordion-header').forEach(header => {
+    header.onclick = function() {
+      // Только один аккордеон открыт одновременно:
+      document.querySelectorAll('.my-accordion').forEach(acc => {
+        if (acc !== this.parentElement) acc.classList.remove('open');
+      });
+      this.parentElement.classList.toggle('open');
+    };
+  });
+  // По умолчанию открыт аккордеон с презентациями
+  const pdfAcc = document.getElementById('pdf-accordion');
+  if (pdfAcc) pdfAcc.classList.add('open');
+}
+document.addEventListener('DOMContentLoaded', initMyAccordions);
+</script>
+
+</body>
+</html>
+>>>>>>> ce92add209017c9818742ebf72b58a12b30140ad
