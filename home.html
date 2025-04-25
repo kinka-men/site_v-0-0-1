@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Виртуальный музей школы №17</title>
     <style>
-        /* --- Общие стили --- */
         body {
             font-family: sans-serif;
             margin: 0;
@@ -13,42 +12,36 @@
             color: #333;
         }
 
-        /* --- Стили для секции "hero" --- */
         .hero {
-            position: relative; /* База для absolute позиционирования */
+            position: relative;
             background-color: #fffbeb;
             padding: 50px 20px;
             text-align: center;
-            overflow: hidden; /* Важно, если изображение выходит за края */
+            overflow: hidden;
             min-height: 250px;
             border-bottom: 2px solid #e43d30;
             margin-bottom: 20px;
         }
 
-        /* --- Стили для изображения (Десктоп: еще левее) --- */
         .hero .georgian-ribbon {
             position: absolute;
-            z-index: 1; /* Под текстом на десктопе */
+            z-index: 1;
             width: auto;
-            /* === ИЗМЕНЕНИЯ ДЛЯ ДЕСКТОПА === */
-            max-width: 35%;  /* Можно чуть уменьшить */
-            height: 85%;    /* Можно чуть увеличить высоту */
+            max-width: 35%;
+            height: 85%;
             max-height: 300px;
             top: 50%;
-            left: 1%;       /* Еще левее */
-            transform: translateY(-50%); /* Только вертикальное центрирование */
-            /* === КОНЕЦ ИЗМЕНЕНИЙ === */
+            left: 1%;
+            transform: translateY(-50%);
             opacity: 0.9;
-            transition: all 0.3s ease; /* Плавный переход для адаптивности */
+            transition: all 0.3s ease;
         }
 
-        /* --- Стили для текстового контента --- */
         .hero .hero-content {
             position: relative;
-            z-index: 2; /* Текст НАД изображением на десктопе */
+            z-index: 2;
             display: inline-block;
             vertical-align: middle;
-             /* Добавим отступ справа, чтобы текст не прилипал к левому краю при смещении картинки */
             padding-left: 5%;
             padding-right: 5%;
         }
@@ -59,20 +52,21 @@
             margin-top: 0;
             margin-bottom: 10px;
             font-weight: bold;
-            -webkit-text-stroke: 1px white;
-            text-stroke: 1px white;
+            -webkit-text-stroke: 1px #fff;
+            /* text-stroke не поддерживается в большинстве браузеров, оставляем только -webkit- */
+            /* text-stroke: 1px #fff; */
             paint-order: stroke fill;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            /* УБРАНО: text-shadow */
         }
 
         .hero .hero-content p {
             font-size: 1.3em;
             margin-bottom: 20px;
             color: #333;
-            -webkit-text-stroke: 0.8px white;
-            text-stroke: 0.8px white;
+            -webkit-text-stroke: 0.8px #fff;
+            /* text-stroke: 0.8px #fff; */
             paint-order: stroke fill;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+            /* УБРАНО: text-shadow */
         }
 
         .hero .hero-content .years {
@@ -87,7 +81,6 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* --- Стили для секции "О нашем музее" --- */
         .section {
             padding: 20px;
             max-width: 800px;
@@ -110,47 +103,36 @@
             margin-bottom: 15px;
             color: #555;
         }
- 
-        /* --- Адаптивность (Маленькие экраны) --- */
+
         @media (max-width: 1100px) {
              .hero {
                 min-height: 200px;
                 padding-top: 30px;
                 padding-bottom: 30px;
              }
-
-            /* === ИЗМЕНЕНИЯ ДЛЯ МОБИЛЬНЫХ === */
             .hero .georgian-ribbon {
-                 z-index: 3;      /* Иконка ПОВЕРХ текста */
-                 /* Размеры иконки */
-                 width: auto;     /* Сбрасываем для корректного max-width/height */
-                 height: auto;    /* Сбрасываем для корректного max-width/height */
+                 z-index: 3;
+                 width: auto;
+                 height: auto;
                  max-width: 60px;
                  max-height: 60px;
-                 /* Позиционирование в левом нижнем углу */
-                 top: auto;       /* Убираем позиционирование от верха */
-                 left: 15px;      /* Отступ слева */
-                 bottom: 15px;    /* Отступ снизу */
-                 transform: none; /* Убираем трансформацию */
-                 opacity: 1;      /* Можно сделать полностью непрозрачной */
+                 top: auto;
+                 left: 15px;
+                 bottom: 15px;
+                 transform: none;
+                 opacity: 1;
             }
-             /* === КОНЕЦ ИЗМЕНЕНИЙ === */
-
             .hero .hero-content {
-                 padding-left: 10px; /* Уменьшаем отступы для мобильных */
+                 padding-left: 10px;
                  padding-right: 10px;
-                 /* Важно: текст может оказаться ПОД иконкой в углу */
             }
-
             .hero .hero-content h2 {
                 font-size: 1.6em;
-                 -webkit-text-stroke-width: 0.8px;
-                 text-stroke-width: 0.8px;
+                -webkit-text-stroke-width: 0.8px;
             }
             .hero .hero-content p {
                 font-size: 1.0em;
-                 -webkit-text-stroke-width: 0.5px;
-                 text-stroke-width: 0.5px;
+                -webkit-text-stroke-width: 0.5px;
             }
              .hero .hero-content .years {
                  font-size: 0.9em;
@@ -160,17 +142,11 @@
                 padding: 15px;
             }
         }
-
-         /* Можно добавить еще один breakpoint для очень маленьких экранов, если нужно */
-         /* @media (max-width: 480px) { ... } */
-
     </style>
 </head>
 <body>
 
     <div class="hero">
-        <!-- Изображение (Орден Отечественной войны и лента) -->
-        <!-- !!! ЗАМЕНИТЕ "path/to/your/order-image.png" НА ПУТЬ К ВАШЕМУ ИЗОБРАЖЕНИЮ !!! -->
         <img src="https://archive.org/download/image2_20250424/image2.png" alt="Символ Победы" class="georgian-ribbon">
 
         <div class="hero-content">
