@@ -272,3 +272,81 @@ footer p { margin-bottom: 5px; font-size: 14px; line-height: 1.4;}
      .content #history-iframe { height: 65vh; min-height: 350px; }
      .content .gallery-caption { font-size: 13px; padding: 8px 10px; } /* Уменьшаем подпись */
 }
+
+.my-accordion {
+    margin: 20px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px #0001;
+    background: #fff;
+  }
+  .my-accordion-header {
+    background: #f0f0f0;
+    cursor: pointer;
+    padding: 18px 24px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    user-select: none;
+    transition: background 0.2s;
+  }
+  .my-accordion-header:hover {
+    background: #e0e0e0;
+  }
+  .my-accordion-content {
+    display: none;
+    padding: 16px 24px 24px 24px;
+    background: #fff;
+  }
+  .my-accordion.open .my-accordion-content {
+    display: block;
+  }
+
+  .my-accordion {
+    margin: 20px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px #0001;
+    background: #fff;
+  }
+  .my-accordion-header {
+    background: #f0f0f0;
+    cursor: pointer;
+    padding: 18px 24px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    user-select: none;
+    transition: background 0.2s;
+  }
+  .my-accordion-header:hover {
+    background: #e0e0e0;
+  }
+  .my-accordion-content {
+    display: none;
+    padding: 16px 24px 24px 24px;
+    background: #fff;
+  }
+  .my-accordion.open .my-accordion-content {
+    display: block;
+  }
+
+  .accordion {
+    margin: 20px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .accordion-header {
+    background: #f0f0f0;
+    padding: 15px 20px;
+    cursor: pointer;
+    margin: 0;
+  }
+  .accordion-content {
+    display: none;
+    padding: 20px;
+  }
+  .accordion.active .accordion-content {
+    display: block;
+  }

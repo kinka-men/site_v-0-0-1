@@ -167,3 +167,56 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 }); // Конец DOMContentLoaded
+// --- Аккордеоны (уникальные классы, не конфликтуют с Bootstrap и др.) ---
+document.addEventListener('DOMContentLoaded', function() {
+    // Открытие/закрытие аккордеонов по клику
+    document.querySelectorAll('.my-accordion-header').forEach(header => {
+      header.addEventListener('click', function() {
+        // Если нужно, чтобы только один аккордеон был открыт:
+        document.querySelectorAll('.my-accordion').forEach(acc => {
+          if (acc !== this.parentElement) acc.classList.remove('open');
+        });
+        this.parentElement.classList.toggle('open');
+      });
+    });
+    // По умолчанию открыт аккордеон с презентациями (можно поменять на видео)
+    document.getElementById('pdf-accordion').classList.add('open');
+  });
+
+  function initMyAccordions() {
+    document.querySelectorAll('.my-accordion-header').forEach(header => {
+      header.onclick = function() {
+        document.querySelectorAll('.my-accordion').forEach(acc => {
+          if (acc !== this.parentElement) acc.classList.remove('open');
+        });
+        this.parentElement.classList.toggle('open');
+      };
+    });
+    // По умолчанию открыть аккордеон с презентациями, если есть
+    const pdfAcc = document.getElementById('pdf-accordion');
+    if (pdfAcc) pdfAcc.classList.add('open');
+  }
+
+  contentPlaceholder.innerHTML = html;
+initMyAccordions();
+
+// В конец функции loadMainPageContent добавь:
+if (pageName === 'war-history') {
+    initAccordions();
+  }
+  
+  // Добавь эту функцию в script.js:
+  function initAccordions() {
+    document.querySelectorAll('.accordion-header').forEach(header => {
+      header.addEventListener('click', function() {
+        const parent = this.parentElement;
+        parent.classList.toggle('active');
+      });
+    });
+    
+    // Открыть первый аккордеон по умолчанию
+    const firstAccordion = document.querySelector('.accordion');
+    if (firstAccordion) {
+      firstAccordion.classList.add('active');
+    }
+  }
