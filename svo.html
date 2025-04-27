@@ -5,21 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Горжусь тобой, солдат России</title>
     <style>
+        /* Сброс стилей для предотвращения конфликтов */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+        
         body {
             font-family: sans-serif;
-            margin: 20px;
+            background: transparent; /* Прозрачный фон вместо белого */
+            padding: 0; /* Убираем отступы, которые создавали рамку */
         }
+        
+        .svo-content {
+            padding: 0 20px; /* Внутренние отступы вместо внешних */
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        
         h1 {
             text-align: center;
             color: #B81A2B; /* Примерный красный цвет из заголовка */
             font-size: 2.5em;
             margin-bottom: 30px;
         }
+        
         .container {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between; /* Распределить блоки */
         }
+        
         .soldier-card {
             width: 48%; /* Примерно половина ширины с небольшим отступом */
             margin-bottom: 20px;
@@ -29,6 +48,7 @@
             overflow: hidden; /* Чтобы contener float */
             background-color: #f9f9f9; /* Легкий фон для карточки */
         }
+        
         .soldier-card img {
             float: left;
             margin-right: 15px;
@@ -37,12 +57,14 @@
             height: auto;
             border: 1px solid #ccc;
         }
+        
         .soldier-card h2 {
             margin-top: 0;
             margin-bottom: 10px;
             font-size: 1.2em;
             color: #333;
         }
+        
         .soldier-card p {
             text-align: justify;
             font-size: 0.9em;
@@ -61,9 +83,9 @@
             .soldier-card img {
                 max-width: 100px;
             }
-             h1 {
+            h1 {
                 font-size: 2em;
-             }
+            }
         }
     </style>
 </head>
@@ -120,10 +142,5 @@
 
     </div>
 
-<<<<<<< HEAD
 </body> 
    
-=======
-</body>
-</html>
->>>>>>> 46253c5b4b6778d02ef98d61d90c63db01a19e99
