@@ -1,1 +1,243 @@
-
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Предметы эпохи</title>
+    <h2>Предметы 1940х</h2>
+    <style>
+        /* Стили для галереи */
+        .gallery-container {
+            padding: 20px;
+        }
+        
+        .gallery-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .gallery-item {
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.03);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        /* Модальное окно */
+        .items-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            overflow: hidden;
+        }
+        
+        .items-modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .items-modal-content {
+            position: relative;
+            width: 80%;
+            max-height: 80vh;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .items-modal-content.fullscreen {
+            width: 100%;
+            max-height: 100vh;
+        }
+        
+        .items-modal-image-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .items-modal-image {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            cursor: move;
+        }
+        
+        .items-modal-content.fullscreen .items-modal-image {
+            max-height: 100vh;
+        }
+        
+        .items-modal-controls {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 1010;
+        }
+        
+        .items-modal-btn {
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .items-modal-btn:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .items-modal-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #333;
+        }
+        
+        .items-close-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            z-index: 1010;
+        }
+        
+        .items-close-btn:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .items-close-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #333;
+        }
+        
+        .items-zoom-controls {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 1010;
+        }
+        
+        .items-zoom-level {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 20px;
+            padding: 5px 10px;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="gallery-container">
+        
+        <div class="gallery" id="items-gallery">
+            <div class="gallery-item" data-src="https://archive.org/download/20151224_103912_20250425_145529/20151224_103912.jpg">
+                <img src="https://archive.org/download/20151224_103912_20250425_145529/20151224_103912.jpg" alt="Предмет 1940-х годов">
+            </div>
+            <div class="gallery-item" data-src="https://archive.org/download/20151224_103902_20250425_145418/20151224_103902.jpg">
+                <img src="https://archive.org/download/20151224_103902_20250425_145418/20151224_103902.jpg" alt="Предмет 1940-х годов">
+            </div>
+            <div class="gallery-item" data-src="https://archive.org/download/20151224_103905_20250425_145346/20151224_103905.jpg">
+                <img src="https://archive.org/download/20151224_103905_20250425_145346/20151224_103905.jpg" alt="Предмет 1940-х годов">
+            </div>
+            <div class="gallery-item" data-src="https://archive.org/download/20151224_103847_20250425_145311/20151224_103847.jpg">
+                <img src="https://archive.org/download/20151224_103847_20250425_145311/20151224_103847.jpg" alt="Предмет 1940-х годов">
+            </div>
+            <div class="gallery-item" data-src="https://archive.org/download/20151224_103817_20250425_145226/20151224_103817.jpg">
+                <img src="https://archive.org/download/20151224_103817_20250425_145226/20151224_103817.jpg" alt="Предмет 1940-х годов">
+            </div>
+            <div class="gallery-item" data-src="https://archive.org/download/20151224_103810_20250425_145153/20151224_103810.jpg">
+                <img src="https://archive.org/download/20151224_103810_20250425_145153/20151224_103810.jpg" alt="Предмет 1940-х годов">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для просмотра изображений -->
+    <div class="items-modal" id="items-imageModal">
+        <div class="items-modal-content">
+            <div class="items-modal-image-container" id="items-imageContainer">
+                <img class="items-modal-image" id="items-modalImage" src="" alt="Увеличенное изображение">
+            </div>
+            
+            <button class="items-close-btn" id="items-closeModal">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </button>
+            
+            <div class="items-zoom-controls">
+                <button class="items-modal-btn" id="items-zoomOutBtn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        <path d="M7 9h5v1H7z"/>
+                    </svg>
+                </button>
+                <div class="items-zoom-level" id="items-zoomLevel">100%</div>
+                <button class="items-modal-btn" id="items-zoomInBtn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="items-modal-controls">
+                <button class="items-modal-btn" id="items-resetZoomBtn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                    </svg>
+                </button>
+                
+                <button class="items-modal-btn" id="items-fullscreenBtn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- ФУНКЦИЯ: Загрузка основного контента раздела ---
     async function loadMainPageContent(pageName) {
-        contentPlaceholder.innerHTML = '<p>Загрузка...</p>';
+        contentPlaceholder.innerHTML = '<div class="loader"><div class="spinner"></div><p>Загрузка...</p></div>';
         const fileName = `${pageName}.html`;
         try {
             const response = await fetch(fileName);
@@ -21,12 +21,35 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             const html = await response.text();
             contentPlaceholder.innerHTML = html;
+
+            // Инициализация разделов после загрузки контента
             if (pageName === 'history') {
                 requestAnimationFrame(initializeHistoryNavigation);
             }
+            if (pageName === 'war-history') {
+                requestAnimationFrame(initAccordions);
+            }
+            if (pageName === 'items') {
+                requestAnimationFrame(initPhotoGallery);
+            }
+            
+            // Сохраняем текущую страницу в localStorage
+            localStorage.setItem('currentPage', pageName);
+            
+            // Обновляем URL без перезагрузки страницы
+            const newUrl = `#page=${pageName}`;
+            if (window.location.hash !== newUrl) {
+                window.history.pushState({ page: pageName }, '', newUrl);
+            }
         } catch (error) {
             console.error("Не удалось загрузить основной контент:", error);
-            contentPlaceholder.innerHTML = `<p style="color: red; text-align: center;">Не удалось загрузить раздел '${pageName}'.<br><small>${error.message}</small></p>`;
+            contentPlaceholder.innerHTML = `
+                <div class="error-message">
+                    <h2>Ошибка загрузки страницы</h2>
+                    <p>${error.message}</p>
+                    <button onclick="document.querySelector('.tab[data-page=home]').click()">Вернуться на главную</button>
+                </div>
+            `;
         }
     }
 
@@ -35,13 +58,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const historyIframe = contentPlaceholder.querySelector('#history-iframe');
         const prevButton = contentPlaceholder.querySelector('#history-prev');
         const nextButton = contentPlaceholder.querySelector('#history-next');
-        const titleSummary = contentPlaceholder.querySelector('#history-title'); // <summary>
-        const detailsElement = contentPlaceholder.querySelector('#history-details'); // <details>
+        const titleSummary = contentPlaceholder.querySelector('#history-title');
+        const detailsElement = contentPlaceholder.querySelector('#history-details');
         const dropdownLinks = contentPlaceholder.querySelectorAll('#history-dropdown a');
 
         if (!historyIframe || !prevButton || !nextButton || !titleSummary || !detailsElement) {
             console.error("Не найдены основные элементы навигации истории при обновлении!");
-            // Можно добавить return; если критично
         }
 
         if (newIndex < 0 || newIndex >= historyTotalSections) {
@@ -56,39 +78,109 @@ document.addEventListener('DOMContentLoaded', function() {
              sectionTitle = dropdownLinks[currentHistorySectionIndex].textContent || sectionTitle;
         }
 
-        // Обновляем iframe (если найден)
         if (historyIframe) historyIframe.src = fileName;
-        // Обновляем текст <summary> (если найден)
         if (titleSummary) titleSummary.textContent = sectionTitle;
-        // Обновляем состояние кнопок (если найдены)
         if (prevButton) prevButton.disabled = (currentHistorySectionIndex === 0);
         if (nextButton) nextButton.disabled = (currentHistorySectionIndex === historyTotalSections - 1);
-        // Закрываем <details> (если найден)
         if (detailsElement) detailsElement.removeAttribute('open');
-
-        console.log(`История: Переключено на раздел ${currentHistorySectionIndex + 1} (${fileName})`);
     }
 
     // --- ФУНКЦИЯ: Инициализация навигации ИСТОРИИ ---
     function initializeHistoryNavigation() {
-        console.log("Инициализация навигации истории (details/summary)...");
         const detailsElement = contentPlaceholder.querySelector('#history-details');
-        if (detailsElement) detailsElement.removeAttribute('open'); // Убедимся, что закрыт
-        updateHistorySection(currentHistorySectionIndex); // Установим начальное состояние
+        if (detailsElement) detailsElement.removeAttribute('open');
+        updateHistorySection(currentHistorySectionIndex);
+    }
+
+    // --- ФУНКЦИЯ: Инициализация аккордеонов ---
+    function initAccordions() {
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const parent = this.parentElement;
+                parent.classList.toggle('active');
+            });
+        });
+        // Открыть первый аккордеон по умолчанию
+        const firstAccordion = document.querySelector('.accordion');
+        if (firstAccordion) {
+            firstAccordion.classList.add('active');
+        }
+    }
+
+    // --- ФУНКЦИЯ: Инициализация фотогалереи с модальным увеличением ---
+    function initPhotoGallery() {
+        const gallery = document.querySelector('.photo-gallery');
+        const modal = document.getElementById('modal');
+        const modalImg = document.getElementById('modalImg');
+        const closeBtn = document.getElementById('closeBtn');
+        const zoomBtn = document.getElementById('zoomBtn');
+        const modalContent = document.getElementById('modalContent');
+        let isFullscreen = false;
+
+        if (!gallery || !modal) return;
+
+        gallery.addEventListener('click', function(e) {
+            if (e.target.tagName === 'IMG') {
+                modalImg.src = e.target.src;
+                modal.classList.add('open');
+                modalContent.classList.remove('fullscreen');
+                isFullscreen = false;
+            }
+        });
+
+        closeBtn.addEventListener('click', function() {
+            modal.classList.remove('open');
+            modalImg.src = '';
+        });
+
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.classList.remove('open');
+                modalImg.src = '';
+            }
+        });
+
+        zoomBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            isFullscreen = !isFullscreen;
+            if (isFullscreen) {
+                modalContent.classList.add('fullscreen');
+            } else {
+                modalContent.classList.remove('fullscreen');
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (modal.classList.contains('open') && e.key === 'Escape') {
+                modal.classList.remove('open');
+                modalImg.src = '';
+            }
+        });
+    }
+
+    // --- ФУНКЦИЯ: Установка активной вкладки ---
+    function setActiveTab(pageName) {
+        mainTabs.forEach(tab => {
+            if (tab.getAttribute('data-page') === pageName) {
+                tab.classList.add('active');
+                // Прокручиваем к активной вкладке, если она не видна
+                tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            } else {
+                tab.classList.remove('active');
+            }
+        });
     }
 
     // --- ОБРАБОТЧИК: Клик по ОСНОВНЫМ вкладкам ---
     mainTabs.forEach(tab => {
         tab.addEventListener('click', function(e) {
             e.preventDefault();
-            mainTabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
             const pageName = this.getAttribute('data-page');
+            setActiveTab(pageName);
             if (pageName === 'history') {
                 currentHistorySectionIndex = 0;
             }
             loadMainPageContent(pageName);
-            this.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         });
     });
 
@@ -116,45 +208,75 @@ document.addEventListener('DOMContentLoaded', function() {
              event.preventDefault();
              const sectionIndex = parseInt(dropdownLink.getAttribute('data-section-index'), 10);
              if (!isNaN(sectionIndex)) {
-                  updateHistorySection(sectionIndex); // Список закроется в этой функции
-             } else { console.warn("Не удалось получить section-index из ссылки dropdown"); }
-             // Не делаем return, чтобы стандартное поведение details (закрытие) тоже сработало, если нужно
+                  updateHistorySection(sectionIndex);
+             }
         }
 
         // --- Клик по ЗАГОЛОВКУ <summary> ---
-        // Явных действий не требуется, браузер сам откроет/закроет
         const titleSummary = target.closest('#history-title');
         if (titleSummary) {
-            console.log("Клик по summary");
-            // Если нужно закрывать другие открытые <details> на странице (если их будет несколько),
-            // можно добавить логику здесь, но сейчас это не требуется.
+            // Можно добавить логику, если нужно
         }
 
         // --- Закрытие <details> при клике ВНЕ его области ---
-        // Стандартное поведение обычно закрывает details при потере фокуса,
-        // но можно добавить явное закрытие для большей надежности
         const detailsElement = contentPlaceholder.querySelector('#history-details');
         if (detailsElement && detailsElement.hasAttribute('open') && !target.closest('#history-details')) {
-             // Дополнительная проверка: не был ли клик на самом summary (чтобы не закрыть сразу после открытия)
             if (!target.closest('#history-title')) {
-                 detailsElement.removeAttribute('open');
-                 console.log("Dropdown (<details>) закрыт кликом вне области");
+                detailsElement.removeAttribute('open');
             }
         }
     });
 
+    // --- Обработчик изменения хэша URL (для навигации по истории) ---
+    window.addEventListener('hashchange', function() {
+        const hash = window.location.hash;
+        if (hash.startsWith('#page=')) {
+            const pageName = hash.replace('#page=', '');
+            setActiveTab(pageName);
+            loadMainPageContent(pageName);
+        }
+    });
+
+    // --- Обработчик кнопки "назад" в браузере ---
+    window.addEventListener('popstate', function(event) {
+        if (event.state && event.state.page) {
+            setActiveTab(event.state.page);
+            loadMainPageContent(event.state.page);
+        } else {
+            // Если нет состояния, проверяем хэш
+            const hash = window.location.hash;
+            if (hash.startsWith('#page=')) {
+                const pageName = hash.replace('#page=', '');
+                setActiveTab(pageName);
+                loadMainPageContent(pageName);
+            }
+        }
+    });
 
     // --- ИНИЦИАЛИЗАЦИЯ при первой загрузке страницы ---
-    const initialActiveMainTab = document.querySelector('.tab.active');
-    if (initialActiveMainTab) {
-        loadMainPageContent(initialActiveMainTab.getAttribute('data-page'));
-    } else if (mainTabs.length > 0) {
-        mainTabs[0].classList.add('active');
-        loadMainPageContent(mainTabs[0].getAttribute('data-page'));
-    } else {
-        contentPlaceholder.innerHTML = '<p>Нет доступных разделов.</p>';
+    function initializePage() {
+        // Проверяем хэш URL
+        const hash = window.location.hash;
+        let pageName = 'home'; // По умолчанию
+        
+        if (hash.startsWith('#page=')) {
+            pageName = hash.replace('#page=', '');
+        } else {
+            // Если хэша нет, проверяем localStorage
+            const savedPage = localStorage.getItem('currentPage');
+            if (savedPage) {
+                pageName = savedPage;
+                // Обновляем URL без перезагрузки страницы
+                window.history.replaceState({ page: pageName }, '', `#page=${pageName}`);
+            }
+        }
+        
+        setActiveTab(pageName);
+        loadMainPageContent(pageName);
     }
 
+    // Запускаем инициализацию
+    initializePage();
 
     // --- Горизонтальная прокрутка ОСНОВНЫХ вкладок колесиком мыши ---
     if (mainTabsContainer) {
@@ -165,58 +287,220 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, { passive: false });
     }
+});
 
-}); // Конец DOMContentLoaded
-// --- Аккордеоны (уникальные классы, не конфликтуют с Bootstrap и др.) ---
-document.addEventListener('DOMContentLoaded', function() {
-    // Открытие/закрытие аккордеонов по клику
-    document.querySelectorAll('.my-accordion-header').forEach(header => {
-      header.addEventListener('click', function() {
-        // Если нужно, чтобы только один аккордеон был открыт:
-        document.querySelectorAll('.my-accordion').forEach(acc => {
-          if (acc !== this.parentElement) acc.classList.remove('open');
-        });
-        this.parentElement.classList.toggle('open');
-      });
-    });
-    // По умолчанию открыт аккордеон с презентациями (можно поменять на видео)
-    document.getElementById('pdf-accordion').classList.add('open');
-  });
+// Глобальные переменные для работы с изображением
+let itemsZoomLevel = 1;
+let itemsMaxZoom = 5;
+let itemsIsDragging = false;
+let itemsStartX, itemsStartY;
+let itemsTranslateX = 0, itemsTranslateY = 0;
 
-  function initMyAccordions() {
-    document.querySelectorAll('.my-accordion-header').forEach(header => {
-      header.onclick = function() {
-        document.querySelectorAll('.my-accordion').forEach(acc => {
-          if (acc !== this.parentElement) acc.classList.remove('open');
-        });
-        this.parentElement.classList.toggle('open');
-      };
-    });
-    // По умолчанию открыть аккордеон с презентациями, если есть
-    const pdfAcc = document.getElementById('pdf-accordion');
-    if (pdfAcc) pdfAcc.classList.add('open');
-  }
-
-  contentPlaceholder.innerHTML = html;
-initMyAccordions();
-
-// В конец функции loadMainPageContent добавь:
-if (pageName === 'war-history') {
-    initAccordions();
-  }
-  
-  // Добавь эту функцию в script.js:
-  function initAccordions() {
-    document.querySelectorAll('.accordion-header').forEach(header => {
-      header.addEventListener('click', function() {
-        const parent = this.parentElement;
-        parent.classList.toggle('active');
-      });
-    });
-    
-    // Открыть первый аккордеон по умолчанию
-    const firstAccordion = document.querySelector('.accordion');
-    if (firstAccordion) {
-      firstAccordion.classList.add('active');
+// Делегирование событий для галереи предметов
+document.addEventListener('click', function(event) {
+    // Проверяем, был ли клик по элементу галереи
+    let galleryItem = event.target.closest('.gallery-item');
+    if (galleryItem && document.getElementById('items-gallery')) {
+        const imgSrc = galleryItem.getAttribute('data-src');
+        const modalImage = document.getElementById('items-modalImage');
+        const modal = document.getElementById('items-imageModal');
+        
+        if (modalImage && modal) {
+            // Сбрасываем зум и позицию
+            resetImageZoomAndPosition();
+            
+            modalImage.src = imgSrc;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Блокировка прокрутки
+        }
     }
-  }
+    
+    // Обработка клика по кнопке закрытия
+    if (event.target.closest('#items-closeModal')) {
+        closeItemsModal();
+    }
+    
+    // Обработка клика по фону модального окна
+    if (event.target.classList.contains('items-modal')) {
+        closeItemsModal();
+    }
+    
+    // Обработка клика по кнопке полноэкранного режима
+    if (event.target.closest('#items-fullscreenBtn')) {
+        const modalContent = document.querySelector('.items-modal-content');
+        if (modalContent) {
+            modalContent.classList.toggle('fullscreen');
+        }
+    }
+    
+    // Обработка клика по кнопке увеличения (зум +)
+    if (event.target.closest('#items-zoomInBtn')) {
+        zoomImage(0.5); // Увеличиваем на 50%
+    }
+    
+    // Обработка клика по кнопке уменьшения (зум -)
+    if (event.target.closest('#items-zoomOutBtn')) {
+        zoomImage(-0.5); // Уменьшаем на 50%
+    }
+    
+    // Обработка клика по кнопке сброса зума
+    if (event.target.closest('#items-resetZoomBtn')) {
+        resetImageZoomAndPosition();
+    }
+});
+
+// Обработка клавиши Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeItemsModal();
+    }
+});
+
+// Обработчики для перетаскивания изображения
+document.addEventListener('mousedown', startDragging);
+document.addEventListener('touchstart', startDragging, { passive: false });
+
+document.addEventListener('mousemove', moveImage);
+document.addEventListener('touchmove', moveImage, { passive: false });
+
+document.addEventListener('mouseup', stopDragging);
+document.addEventListener('touchend', stopDragging);
+document.addEventListener('mouseleave', stopDragging);
+
+// Функция для закрытия модального окна
+function closeItemsModal() {
+    const modal = document.getElementById('items-imageModal');
+    const modalContent = document.querySelector('.items-modal-content');
+    
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = ''; // Разблокировка прокрутки
+        
+        if (modalContent) {
+            setTimeout(() => {
+                modalContent.classList.remove('fullscreen');
+                resetImageZoomAndPosition();
+            }, 300);
+        }
+    }
+}
+
+// Функция для изменения масштаба изображения
+function zoomImage(delta) {
+    const modalImage = document.getElementById('items-modalImage');
+    const zoomLevelElement = document.getElementById('items-zoomLevel');
+    
+    if (!modalImage) return;
+    
+    // Изменяем уровень зума
+    itemsZoomLevel += delta;
+    
+    // Ограничиваем зум от 1 до itemsMaxZoom
+    if (itemsZoomLevel < 1) itemsZoomLevel = 1;
+    if (itemsZoomLevel > itemsMaxZoom) itemsZoomLevel = itemsMaxZoom;
+    
+    // Применяем трансформацию
+    applyTransform(modalImage);
+    
+    // Обновляем отображение уровня зума
+    if (zoomLevelElement) {
+        zoomLevelElement.textContent = Math.round(itemsZoomLevel * 100) + '%';
+    }
+}
+
+// Функция для начала перетаскивания
+function startDragging(e) {
+    const modalImage = document.getElementById('items-modalImage');
+    const imageContainer = document.getElementById('items-imageContainer');
+    
+    if (!modalImage || !imageContainer) return;
+    
+    // Проверяем, что клик был по изображению и зум больше 1
+    if ((e.target === modalImage || e.target.closest('#items-modalImage')) && itemsZoomLevel > 1) {
+        e.preventDefault();
+        itemsIsDragging = true;
+        
+        // Получаем начальные координаты
+        if (e.type === 'mousedown') {
+            itemsStartX = e.clientX;
+            itemsStartY = e.clientY;
+        } else if (e.type === 'touchstart') {
+            itemsStartX = e.touches[0].clientX;
+            itemsStartY = e.touches[0].clientY;
+        }
+    }
+}
+
+// Функция для перемещения изображения
+function moveImage(e) {
+    const modalImage = document.getElementById('items-modalImage');
+    
+    if (!itemsIsDragging || !modalImage) return;
+    
+    e.preventDefault();
+    
+    let currentX, currentY;
+    
+    if (e.type === 'mousemove') {
+        currentX = e.clientX;
+        currentY = e.clientY;
+    } else if (e.type === 'touchmove') {
+        currentX = e.touches[0].clientX;
+        currentY = e.touches[0].clientY;
+    }
+    
+    // Вычисляем смещение
+    const deltaX = currentX - itemsStartX;
+    const deltaY = currentY - itemsStartY;
+    
+    // Обновляем позицию
+    itemsTranslateX += deltaX;
+    itemsTranslateY += deltaY;
+    
+    // Ограничиваем перемещение в зависимости от зума
+    const maxTranslate = (itemsZoomLevel - 1) * 100;
+    itemsTranslateX = Math.max(-maxTranslate, Math.min(maxTranslate, itemsTranslateX));
+    itemsTranslateY = Math.max(-maxTranslate, Math.min(maxTranslate, itemsTranslateY));
+    
+    // Применяем трансформацию
+    applyTransform(modalImage);
+    
+    // Обновляем начальные координаты
+    itemsStartX = currentX;
+    itemsStartY = currentY;
+}
+
+// Функция для остановки перетаскивания
+function stopDragging() {
+    itemsIsDragging = false;
+}
+
+// Функция для применения трансформации к изображению
+function applyTransform(element) {
+    if (!element) return;
+    
+    element.style.transform = `scale(${itemsZoomLevel}) translate(${itemsTranslateX / itemsZoomLevel}px, ${itemsTranslateY / itemsZoomLevel}px)`;
+}
+
+// Функция для сброса зума и позиции изображения
+function resetImageZoomAndPosition() {
+    const modalImage = document.getElementById('items-modalImage');
+    const zoomLevelElement = document.getElementById('items-zoomLevel');
+    
+    if (!modalImage) return;
+    
+    itemsZoomLevel = 1;
+    itemsTranslateX = 0;
+    itemsTranslateY = 0;
+    
+    applyTransform(modalImage);
+    
+    if (zoomLevelElement) {
+        zoomLevelElement.textContent = '100%';
+    }
+}
+
+// Экспортируем функции для доступа из других модулей
+window.resetImageZoomAndPosition = resetImageZoomAndPosition;
+window.closeItemsModal = closeItemsModal;
+window.zoomImage = zoomImage;
