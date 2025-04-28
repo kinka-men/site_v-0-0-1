@@ -1,3 +1,88 @@
+// Регистрация Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(registration => {
+          console.log('ServiceWorker зарегистрирован успешно:', registration.scope);
+        })
+        .catch(error => {
+          console.log('Ошибка при регистрации ServiceWorker:', error);
+        });
+    });
+  }
+  
+  // Предварительная загрузка важных ресурсов
+  function preloadResources() {
+    // Предварительная загрузка HTML-файлов
+    const htmlFiles = [
+      'home.html',
+      'history.html',
+      'monuments.html',
+      'archive.html',
+      'items.html',
+      'war-history.html',
+      'svo.html',
+      '1.html',
+      '2.html',
+      '3.html',
+      '4.html',
+      '5.html',
+      '6.html',
+      '7.html',
+      '8.html',
+      '9.html',
+      '10.html',
+      '11.html'
+    ];
+    
+    htmlFiles.forEach(file => {
+      fetch(file).catch(err => console.log(`Не удалось предзагрузить ${file}`, err));
+    });
+    
+    // Предварительная загрузка изображений
+    const imageUrls = [
+      'https://archive.org/download/image2_20250424/image2.png',
+      'https://archive.org/download/20151224_103912_20250425_145529/20151224_103912.jpg',
+      'https://archive.org/download/20151224_103902_20250425_145418/20151224_103902.jpg',
+      'https://archive.org/download/20151224_103905_20250425_145346/20151224_103905.jpg',
+      'https://archive.org/download/20151224_103847_20250425_145311/20151224_103847.jpg',
+      'https://archive.org/download/20151224_103817_20250425_145226/20151224_103817.jpg',
+      'https://archive.org/download/20151224_103810_20250425_145153/20151224_103810.jpg'
+    ];
+    
+    imageUrls.forEach(url => {
+      const img = new Image();
+      img.src = url;
+    });
+  }
+  
+  // Вызываем функцию предварительной загрузки
+  window.addEventListener('load', preloadResources);
+  
+  // Остальной код вашего script.js
+
+  // Функция для принудительного кэширования видео
+function cacheVideo(videoUrl) {
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({
+        type: 'CACHE_VIDEO',
+        url: videoUrl
+      });
+      console.log('Запрос на кэширование видео отправлен:', videoUrl);
+      return true;
+    }
+    return false;
+  }
+  
+  // Пример использования:
+  // document.querySelector('.cache-video-btn').addEventListener('click', function() {
+  //   const videoUrl = this.dataset.videoUrl;
+  //   if (cacheVideo(videoUrl)) {
+  //     this.textContent = 'Кэширование...';
+  //     this.disabled = true;
+  //   }
+  // });
+
 document.addEventListener('DOMContentLoaded', function() {
     // --- Основные элементы DOM ---
     const mainTabs = document.querySelectorAll('.tab');

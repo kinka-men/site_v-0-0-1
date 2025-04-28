@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Нет подключения к сети - Виртуальный музей</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .offline-container {
+            text-align: center;
+            padding: 50px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .offline-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <div class="main-header">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Виртуальный музей Улан-Удэ МАОУ СОШ №17 "Хранители Памяти"</h1>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="offline-container">
+                <div class="offline-icon">📶</div>
+                <h2>Нет подключения к интернету</h2>
+                <p>Для просмотра этой страницы требуется подключение к интернету. Пожалуйста, проверьте ваше соединение и попробуйте снова.</p>
+                <button onclick="window.location.reload()">Обновить страницу</button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2024 Виртуальный музей МАОУ СОШ №17 "Хранители Памяти" | г. Улан-Удэ</p>
+        </footer>
+    </div>
+</body>
+</html>
