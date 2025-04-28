@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+                            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+  <!-- Главная страница -->
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://archive.org/download/image2_20250424/image2.png</image:loc>
+      <image:caption>Георгиевская лента - символ Победы</image:caption>
+      <image:title>Виртуальный музей школы №17 Улан-Удэ</image:title>
+    </image:image>
+  </url>
+
+  <!-- История школы -->
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/history.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://archive.org/download/img-20250425-064007/IMG_20250425_063855.jpg</image:loc>
+      <image:caption>История школы №17 Улан-Удэ</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Памятники республики Бурятия -->
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/monuments.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://archive.org/download/img-20250425-064007/IMG_20250425_063946.jpg</image:loc>
+      <image:caption>Памятники Великой Отечественной войны в Бурятии</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Архив Уголка Боевой Славы -->
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/archive.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://archive.org/download/img-20250425-064007/IMG_20250425_063918.jpg</image:loc>
+      <image:caption>Архивные материалы Уголка Боевой Славы</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Предметы эпохи -->
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/items.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://archive.org/download/20151224_103912_20250425_145529/20151224_103912.jpg</image:loc>
+      <image:caption>Предметы эпохи Великой Отечественной войны</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Война в истории моей семьи -->
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/war-history.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://archive.org/download/img-20250425-064007/IMG_20250425_064007.jpg</image:loc>
+      <image:caption>Война в истории семей учеников школы №17</image:caption>
+    </image:image>
+  </url>
+
+  <!-- СВО -->
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/svo.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Дополнительные страницы -->
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/1.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/2.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/3.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/4.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/5.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/6.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/7.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/8.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/9.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/10.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://kinka-men.github.io/site_v-0-0-1/11.html</loc>
+    <lastmod>2024-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>

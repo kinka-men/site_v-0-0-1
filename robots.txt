@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Sitemap: https://kinka-men.github.io/site_v-0-0-1/sitemap.xml
+
+# Запрещаем индексацию служебных файлов
+Disallow: /offline.html
