@@ -4,6 +4,11 @@ if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js')
         .then(registration => {
           console.log('ServiceWorker зарегистрирован успешно:', registration.scope);
+          
+          // После успешной регистрации начинаем кэширование ресурсов
+          setTimeout(() => {
+            preloadResources();
+          }, 2000); // Небольшая задержка для завершения загрузки страницы
         })
         .catch(error => {
           console.log('Ошибка при регистрации ServiceWorker:', error);
@@ -13,6 +18,8 @@ if ('serviceWorker' in navigator) {
   
   // Предварительная загрузка важных ресурсов
   function preloadResources() {
+    console.log('Начинаем предварительную загрузку ресурсов...');
+    
     // Предварительная загрузка HTML-файлов
     const htmlFiles = [
       'home.html',
@@ -47,17 +54,20 @@ if ('serviceWorker' in navigator) {
       'https://archive.org/download/20151224_103905_20250425_145346/20151224_103905.jpg',
       'https://archive.org/download/20151224_103847_20250425_145311/20151224_103847.jpg',
       'https://archive.org/download/20151224_103817_20250425_145226/20151224_103817.jpg',
-      'https://archive.org/download/20151224_103810_20250425_145153/20151224_103810.jpg'
+      'https://archive.org/download/20151224_103810_20250425_145153/20151224_103810.jpg',
+      'https://archive.org/download/img-20250425-064007/IMG_20250425_063855.jpg',
+      'https://archive.org/download/img-20250425-064007/IMG_20250425_063946.jpg',
+      'https://archive.org/download/img-20250425-064007/IMG_20250425_063918.jpg',
+      'https://archive.org/download/img-20250425-064007/IMG_20250425_064007.jpg'
     ];
     
     // Используем fetch с no-cors для внешних ресурсов
     imageUrls.forEach(url => {
-      // Метод 1: через fetch с no-cors
       fetch(url, { mode: 'no-cors' })
         .then(() => console.log(`Предзагружен ресурс: ${url}`))
         .catch(err => console.log(`Не удалось предзагрузить ${url}`, err));
       
-      // Метод 2: через Image (для изображений)
+      // Дополнительно через Image для изображений
       const img = new Image();
       img.src = url;
     });
@@ -83,10 +93,12 @@ if ('serviceWorker' in navigator) {
         .then(() => console.log(`Предзагружен постер: ${url}`))
         .catch(err => console.log(`Не удалось предзагрузить постер ${url}`, err));
     });
+    
+    // После загрузки изображений начинаем кэшировать видео
+    setTimeout(() => {
+      cacheAllVideos();
+    }, 3000);
   }
-  
-  // Вызываем функцию предварительной загрузки
-  window.addEventListener('load', preloadResources);
   
   // Функция для принудительного кэширования видео
   function cacheVideo(videoUrl) {
@@ -101,8 +113,10 @@ if ('serviceWorker' in navigator) {
     return false;
   }
   
-  // Функция для предварительного кэширования всех видео
+  // Функция для автоматического кэширования всех видео
   function cacheAllVideos() {
+    console.log('Начинаем кэширование всех видео...');
+    
     const videoUrls = [
       'https://archive.org/download/Marina_small_20250425_084033/%D0%9C%D0%B0%D1%80%D0%B8%D0%BD%D0%B0_small.mp4',
       'https://archive.org/download/T.Alesha_small_20250425_084121/%D0%A2.%D0%90%D0%BB%D0%B5%D1%88%D0%B0_small.mp4',
@@ -126,10 +140,13 @@ if ('serviceWorker' in navigator) {
       if (index < videoUrls.length) {
         const url = videoUrls[index];
         cacheVideo(url);
+        console.log(`Запущено кэширование видео ${index + 1} из ${videoUrls.length}: ${url}`);
         index++;
         
-        // Задержка 5 секунд между запросами на кэширование
-        setTimeout(cacheNextVideo, 5000);
+        // Задержка 3 секунды между запросами на кэширование
+        setTimeout(cacheNextVideo, 3000);
+      } else {
+        console.log('Кэширование всех видео завершено');
       }
     }
     
@@ -137,71 +154,43 @@ if ('serviceWorker' in navigator) {
     cacheNextVideo();
   }
   
-  // Функция для добавления кнопок кэширования к видео
-  function addCacheButtons() {
+  // Автоматическое кэширование видео при просмотре
+  document.addEventListener('DOMContentLoaded', () => {
     // Находим все видео на странице
     const videos = document.querySelectorAll('video');
     
     videos.forEach(video => {
       // Получаем URL видео
-      const videoUrl = video.querySelector('source')?.src;
-      if (!videoUrl) return;
-      
-      // Создаем кнопку кэширования
-      const cacheButton = document.createElement('button');
-      cacheButton.className = 'cache-video-btn';
-      cacheButton.textContent = 'Кэшировать видео';
-      cacheButton.dataset.videoUrl = videoUrl;
-      
-      // Добавляем обработчик события
-      cacheButton.addEventListener('click', function() {
-        if (cacheVideo(videoUrl)) {
-          this.textContent = 'Кэширование...';
-          this.disabled = true;
-          
-          // Через 3 секунды меняем текст (примерное время кэширования)
-          setTimeout(() => {
-            this.textContent = 'Видео в кэше';
-          }, 3000);
+      const sources = video.querySelectorAll('source');
+      sources.forEach(source => {
+        const videoUrl = source.src;
+        if (videoUrl) {
+          // Автоматически кэшируем видео при взаимодействии с ним
+          video.addEventListener('play', () => {
+            cacheVideo(videoUrl);
+          }, { once: true }); // Запускаем только один раз
         }
       });
-      
-      // Добавляем кнопку после видео
-      video.parentNode.insertBefore(cacheButton, video.nextSibling);
     });
+  });
+  
+  // Функция для проверки состояния сети
+  function updateOnlineStatus() {
+    const status = navigator.onLine ? 'онлайн' : 'офлайн';
+    console.log(`Статус сети: ${status}`);
+    
+    // Можно добавить индикатор состояния сети на страницу
+    const statusIndicator = document.getElementById('network-status');
+    if (statusIndicator) {
+      statusIndicator.textContent = `Режим: ${status}`;
+      statusIndicator.className = navigator.onLine ? 'online' : 'offline';
+    }
   }
   
-  // Добавляем кнопки кэширования после загрузки страницы
-  window.addEventListener('DOMContentLoaded', () => {
-    // Проверяем поддержку Service Worker
-    if ('serviceWorker' in navigator) {
-      // Добавляем кнопку для кэширования всех видео
-      const cacheAllButton = document.createElement('button');
-      cacheAllButton.id = 'cache-all-videos';
-      cacheAllButton.textContent = 'Кэшировать все видео';
-      cacheAllButton.style.position = 'fixed';
-      cacheAllButton.style.bottom = '20px';
-      cacheAllButton.style.right = '20px';
-      cacheAllButton.style.zIndex = '1000';
-      cacheAllButton.style.padding = '10px 15px';
-      cacheAllButton.style.backgroundColor = '#4CAF50';
-      cacheAllButton.style.color = 'white';
-      cacheAllButton.style.border = 'none';
-      cacheAllButton.style.borderRadius = '5px';
-      cacheAllButton.style.cursor = 'pointer';
-      
-      cacheAllButton.addEventListener('click', function() {
-        cacheAllVideos();
-        this.textContent = 'Кэширование запущено...';
-        this.disabled = true;
-      });
-      
-      document.body.appendChild(cacheAllButton);
-      
-      // Добавляем кнопки к отдельным видео
-      addCacheButtons();
-    }
-  });
+  // Отслеживаем изменения состояния сети
+  window.addEventListener('online', updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+  updateOnlineStatus(); // Проверяем при загрузке
   
   // Остальной код вашего script.js
 
