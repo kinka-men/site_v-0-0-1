@@ -27,6 +27,12 @@ const urlsToCache = [
   '10.html',
   '11.html',
   
+  // Офлайн-страница
+  'offline.html'
+];
+
+// Внешние ресурсы, которые нужно кэшировать с no-cors
+const externalResources = [
   // Изображения георгиевской ленты
   'https://archive.org/download/image2_20250424/image2.png',
   
@@ -71,10 +77,7 @@ const urlsToCache = [
   'https://archive.org/download/Fedor_small_20250425_085055/%D0%A4%D0%B5%D0%B4%D0%BE%D1%80_small.mp4',
   'https://archive.org/download/small_20250423/%D0%92%D0%BE%D0%B9%D0%BD%D0%B0%20%D0%B2%20%D0%B8%D1%81%D1%82%D0%BE%D1%80%D0%B8%D0%B8%20%D0%BC%D0%BE%D0%B5%D0%B9%20%D1%81%D0%B5%D0%BC%D1%8C%D0%B8_small.mp4',
   'https://archive.org/download/small_20250423/%D0%92%D0%BE%D0%B9%D0%BD%D0%B0%20%D0%B2%20%D0%B8%D1%81%D1%82%D0%BE%D1%80%D0%B8%D0%B8%20%D1%81%D0%B5%D0%BC%D1%8C%D0%B8_small.mp4',
-  'https://archive.org/download/online-video-cutter.com-small/Герои%20села%20Улюн%20(online-video-cutter.com)_small.mp4',
-  
-  // Офлайн-страница
-  'offline.html'
+  'https://archive.org/download/online-video-cutter.com-small/Герои%20села%20Улюн%20(online-video-cutter.com)_small.mp4'
 ];
 
 // Максимальный размер файла для кэширования (120 МБ)
@@ -89,68 +92,44 @@ self.addEventListener('install', event => {
       .then(cache => {
         console.log('Открыт кэш');
         
-        // Кэшируем ресурсы по частям, чтобы избежать проблем с большими файлами
-        // Сначала кэшируем HTML, CSS и JS файлы
-        const essentialResources = urlsToCache.filter(url => 
-          url.endsWith('.html') || url.endsWith('.css') || url.endsWith('.js') || 
-          url === '/' || url.includes('/services/img/')
-        );
-        
-        return cache.addAll(essentialResources).then(() => {
-          console.log('Основные ресурсы кэшированы');
+        // Сначала кэшируем локальные ресурсы
+        return cache.addAll(urlsToCache).then(() => {
+          console.log('Локальные ресурсы кэшированы');
           
-          // Затем кэшируем изображения
-          const imageResources = urlsToCache.filter(url => 
-            url.endsWith('.jpg') || url.endsWith('.jpeg') || 
-            url.endsWith('.png') || url.endsWith('.gif') || 
-            url.endsWith('.svg')
-          );
+          // Затем кэшируем внешние ресурсы с no-cors
+          const externalPromises = externalResources.map(url => {
+            // Создаем контроллер для возможности отмены запроса
+            const controller = new AbortController();
+            const signal = controller.signal;
+            
+            // Устанавливаем таймаут 30 секунд для каждого ресурса
+            const timeoutId = setTimeout(() => controller.abort(), 30000);
+            
+            return fetch(url, { 
+              signal,
+              mode: 'no-cors' // Используем no-cors для всех внешних ресурсов
+            })
+              .then(response => {
+                clearTimeout(timeoutId);
+                
+                if (!response) {
+                  console.log(`Не удалось загрузить ресурс ${url}`);
+                  return;
+                }
+                
+                // Для no-cors ответов мы не можем проверить статус или заголовки
+                // Просто кэшируем ответ как есть
+                return cache.put(url, response);
+              })
+              .catch(err => {
+                clearTimeout(timeoutId);
+                console.log(`Ошибка при кэшировании ресурса ${url}:`, err.message);
+              });
+          });
           
-          return cache.addAll(imageResources).then(() => {
-            console.log('Изображения кэшированы');
-            
-            // В последнюю очередь кэшируем видео
-            const videoResources = urlsToCache.filter(url => 
-              url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.ogg')
-            );
-            
-            // Для видео используем отдельные запросы с таймаутами
-            const videoPromises = videoResources.map(url => {
-              // Создаем контроллер для возможности отмены запроса
-              const controller = new AbortController();
-              const signal = controller.signal;
-              
-              // Устанавливаем таймаут 30 секунд для каждого видео
-              const timeoutId = setTimeout(() => controller.abort(), 30000);
-              
-              return fetch(url, { signal })
-                .then(response => {
-                  clearTimeout(timeoutId);
-                  
-                  if (!response || response.status !== 200) {
-                    console.log(`Не удалось загрузить видео ${url}: статус ${response?.status}`);
-                    return;
-                  }
-                  
-                  // Проверяем размер файла
-                  const contentLength = response.headers.get('content-length');
-                  if (contentLength && parseInt(contentLength, 10) > MAX_FILE_SIZE) {
-                    console.log(`Видео ${url} слишком большое для кэширования (${Math.round(parseInt(contentLength, 10) / 1024 / 1024)} МБ)`);
-                    return;
-                  }
-                  
-                  return cache.put(url, response);
-                })
-                .catch(err => {
-                  clearTimeout(timeoutId);
-                  console.log(`Ошибка при кэшировании видео ${url}:`, err.message);
-                });
-            });
-            
-            return Promise.allSettled(videoPromises).then(results => {
-              const succeeded = results.filter(r => r.status === 'fulfilled').length;
-              console.log(`Видео кэшированы: ${succeeded} из ${videoResources.length}`);
-            });
+          return Promise.allSettled(externalPromises).then(results => {
+            const succeeded = results.filter(r => r.status === 'fulfilled').length;
+            console.log(`Внешние ресурсы кэшированы: ${succeeded} из ${externalResources.length}`);
           });
         });
       })
@@ -159,97 +138,132 @@ self.addEventListener('install', event => {
 
 // Перехват запросов и обслуживание из кэша
 self.addEventListener('fetch', event => {
-  // Стратегия: сначала кэш, затем сеть с обновлением кэша
-  event.respondWith(
-    caches.match(event.request)
-      .then(cachedResponse => {
-        // Возвращаем кэшированный ответ, если он есть
-        if (cachedResponse) {
-          // Асинхронно обновляем кэш для следующего раза
-          fetch(event.request)
+  const requestUrl = event.request.url;
+  
+  // Проверяем, является ли запрос внешним ресурсом
+  const isExternalResource = externalResources.some(url => requestUrl.includes(url));
+  
+  // Для внешних ресурсов используем специальную обработку с no-cors
+  if (isExternalResource) {
+    event.respondWith(
+      caches.match(event.request)
+        .then(cachedResponse => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          
+          // Если нет в кэше, делаем запрос с no-cors
+          return fetch(event.request, { mode: 'no-cors' })
             .then(response => {
-              if (response && response.status === 200) {
-                // Проверяем размер файла
-                const contentLength = response.headers.get('content-length');
-                if (!contentLength || parseInt(contentLength, 10) <= MAX_FILE_SIZE) {
+              // Клонируем ответ
+              const responseToCache = response.clone();
+              
+              // Добавляем ответ в кэш
+              caches.open(CACHE_NAME)
+                .then(cache => {
+                  cache.put(event.request, responseToCache);
+                })
+                .catch(err => console.log('Ошибка при добавлении в кэш:', err));
+                
+              return response;
+            })
+            .catch(error => {
+              console.log('Ошибка при загрузке внешнего ресурса:', error);
+              
+              // Для видео возвращаем специальное сообщение
+              if (requestUrl.match(/\.(mp4|webm|ogg)$/)) {
+                return new Response('<div style="display:flex;justify-content:center;align-items:center;height:100%;background:#000;color:#fff;text-align:center;padding:20px;">Видео недоступно в офлайн-режиме</div>', {
+                  headers: {
+                    'Content-Type': 'text/html'
+                  }
+                });
+              }
+              
+              // Для изображений возвращаем SVG-заглушку
+              if (requestUrl.match(/\.(jpg|jpeg|png|gif|svg)$/)) {
+                return new Response('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150"><rect width="100%" height="100%" fill="#f0f0f0"/><text x="50%" y="50%" font-family="sans-serif" font-size="14" text-anchor="middle" fill="#999">Изображение недоступно</text></svg>', {
+                  headers: {
+                    'Content-Type': 'image/svg+xml'
+                  }
+                });
+              }
+              
+              // Для остальных ресурсов возвращаем офлайн-страницу
+              return caches.match('offline.html');
+            });
+        })
+    );
+  } else {
+    // Для локальных ресурсов используем стандартную стратегию
+    event.respondWith(
+      caches.match(event.request)
+        .then(cachedResponse => {
+          // Возвращаем кэшированный ответ, если он есть
+          if (cachedResponse) {
+            // Асинхронно обновляем кэш для следующего раза
+            fetch(event.request)
+              .then(response => {
+                if (response && response.status === 200) {
                   caches.open(CACHE_NAME)
                     .then(cache => cache.put(event.request, response.clone()))
                     .catch(err => console.log('Ошибка при обновлении кэша:', err));
                 }
-              }
-            })
-            .catch(() => {/* Игнорируем ошибки обновления */});
-          
-          return cachedResponse;
-        }
-        
-        // Если нет в кэше, делаем сетевой запрос
-        return fetch(event.request)
-          .then(response => {
-            // Проверяем, что ответ валидный
-            if (!response || response.status !== 200) {
-              return response;
-            }
-            
-            // Проверяем размер файла
-            const contentLength = response.headers.get('content-length');
-            if (contentLength && parseInt(contentLength, 10) > MAX_FILE_SIZE) {
-              console.log('Файл слишком большой для кэширования:', event.request.url);
-              return response;
-            }
-            
-            // Клонируем ответ, так как он может быть использован только один раз
-            const responseToCache = response.clone();
-            
-            // Добавляем ответ в кэш
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
               })
-              .catch(err => console.log('Ошибка при добавлении в кэш:', err));
+              .catch(() => {/* Игнорируем ошибки обновления */});
+            
+            return cachedResponse;
+          }
+          
+          // Если нет в кэше, делаем сетевой запрос
+          return fetch(event.request)
+            .then(response => {
+              // Проверяем, что ответ валидный
+              if (!response || response.status !== 200) {
+                return response;
+              }
               
-            return response;
+              // Клонируем ответ, так как он может быть использован только один раз
+              const responseToCache = response.clone();
+              
+              // Добавляем ответ в кэш
+              caches.open(CACHE_NAME)
+                .then(cache => {
+                  cache.put(event.request, responseToCache);
+                })
+                .catch(err => console.log('Ошибка при добавлении в кэш:', err));
+                
+              return response;
+            });
+        })
+        .catch(error => {
+          console.log('Ошибка при загрузке:', error);
+          
+          // Для HTML страниц возвращаем офлайн-страницу
+          if (event.request.headers.get('accept').includes('text/html')) {
+            return caches.match('offline.html');
+          }
+          
+          return new Response('Ресурс недоступен в офлайн-режиме', {
+            status: 503,
+            statusText: 'Service Unavailable'
           });
-      })
-      .catch(error => {
-        console.log('Ошибка при загрузке:', error);
-        
-        // Для видео возвращаем специальное сообщение
-        if (event.request.url.match(/\.(mp4|webm|ogg)$/)) {
-          return new Response('<div style="display:flex;justify-content:center;align-items:center;height:100%;background:#000;color:#fff;text-align:center;padding:20px;">Видео недоступно в офлайн-режиме</div>', {
-            headers: {
-              'Content-Type': 'text/html'
-            }
-          });
-        }
-        
-        // Для изображений возвращаем SVG-заглушку
-        if (event.request.url.match(/\.(jpg|jpeg|png|gif|svg)$/)) {
-          return new Response('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150"><rect width="100%" height="100%" fill="#f0f0f0"/><text x="50%" y="50%" font-family="sans-serif" font-size="14" text-anchor="middle" fill="#999">Изображение недоступно</text></svg>', {
-            headers: {
-              'Content-Type': 'image/svg+xml'
-            }
-          });
-        }
-        
-        // Для остальных ресурсов возвращаем офлайн-страницу
-        return caches.match('offline.html');
-      })
-  );
+        })
+    );
+  }
 });
 
 // Обновление Service Worker и удаление старых кэшей
 self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
-  
-  // Принимаем контроль над клиентами сразу после активации
-  event.waitUntil(
-    Promise.all([
-      self.clients.claim(),
-      caches.keys().then(cacheNames => {
-        return Promise.all(
-          cacheNames.map(cacheName => {
-            if (cacheWhitelist.indexOf(cacheName) === -1) {
+    const cacheWhitelist = [CACHE_NAME];
+    
+    // Принимаем контроль над клиентами сразу после активации
+    event.waitUntil(
+      Promise.all([
+        self.clients.claim(),
+        caches.keys().then(cacheNames => {
+          return Promise.all(
+            cacheNames.map(cacheName => {
+              if (cacheWhitelist.indexOf(cacheName) === -1) {
                 // Удаляем старые кэши
                 return caches.delete(cacheName);
               }
@@ -282,19 +296,15 @@ self.addEventListener('activate', event => {
           // Устанавливаем таймаут 60 секунд
           const timeoutId = setTimeout(() => controller.abort(), 60000);
           
-          return fetch(videoUrl, { signal })
+          return fetch(videoUrl, { 
+            signal,
+            mode: 'no-cors' // Используем no-cors для видео
+          })
             .then(response => {
               clearTimeout(timeoutId);
               
-              if (!response || response.status !== 200) {
-                console.log(`Не удалось загрузить видео ${videoUrl}: статус ${response?.status}`);
-                return;
-              }
-              
-              // Проверяем размер файла
-              const contentLength = response.headers.get('content-length');
-              if (contentLength && parseInt(contentLength, 10) > MAX_FILE_SIZE) {
-                console.log(`Видео ${videoUrl} слишком большое для кэширования (${Math.round(parseInt(contentLength, 10) / 1024 / 1024)} МБ)`);
+              if (!response) {
+                console.log(`Не удалось загрузить видео ${videoUrl}`);
                 return;
               }
               
