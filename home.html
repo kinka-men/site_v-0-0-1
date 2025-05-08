@@ -53,10 +53,7 @@
             margin-bottom: 10px;
             font-weight: bold;
             -webkit-text-stroke: 1px #fff;
-            /* text-stroke не поддерживается в большинстве браузеров, оставляем только -webkit- */
-            /* text-stroke: 1px #fff; */
             paint-order: stroke fill;
-            /* УБРАНО: text-shadow */
         }
 
         .hero .hero-content p {
@@ -64,9 +61,7 @@
             margin-bottom: 20px;
             color: #333;
             -webkit-text-stroke: 0.8px #fff;
-            /* text-stroke: 0.8px #fff; */
             paint-order: stroke fill;
-            /* УБРАНО: text-shadow */
         }
 
         .hero .hero-content .years {
@@ -105,58 +100,41 @@
         }
 
         /* Стили для кнопки установки PWA */
-        .install-container {
-            text-align: center;
-            margin: 20px auto 30px;
-            max-width: 800px;
-        }
-
-        #installButton {
-            display: none; /* Скрыт по умолчанию, показывается через JS */
+        .install-button {
+            display: block;
+            width: 80%;
+            max-width: 300px;
+            margin: 30px auto;
             background-color: #d73a11;
             color: white;
             border: none;
             border-radius: 5px;
-            padding: 10px 20px;
+            padding: 12px 20px;
             font-size: 16px;
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             transition: background-color 0.3s;
+            text-align: center;
+            text-decoration: none;
         }
 
-        #installButton:hover {
+        .install-button:hover {
             background-color: #b32d0c;
         }
 
-        #installButton img {
+        .install-button img {
             vertical-align: middle;
             margin-right: 8px;
             width: 20px;
             height: 20px;
         }
 
-        .pwa-info {
-            margin-top: 10px;
+        .install-info {
+            text-align: center;
+            margin: 10px auto 30px;
             font-size: 14px;
             color: #666;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-top: 1px solid #eee;
-            font-size: 14px;
-            color: #777;
-        }
-
-        footer a {
-            color: #d73a11;
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
+            max-width: 80%;
         }
 
         @media (max-width: 1100px) {
@@ -218,19 +196,12 @@
         <p>Приглашаем вас совершить виртуальное путешествие по страницам истории и памяти!</p>
     </div>
 
-    <!-- Контейнер для кнопки установки PWA -->
-    <div class="install-container">
-        <button id="installButton">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'%3E%3C/path%3E%3Cpolyline points='7 10 12 15 17 10'%3E%3C/polyline%3E%3Cline x1='12' y1='15' x2='12' y2='3'%3E%3C/line%3E%3C/svg%3E" alt="Установить">
-            Установить приложение
-        </button>
-        <div class="pwa-info" id="pwaInfo"></div>
-    </div>
-
-    <footer>
-        <p>© 2024 Виртуальный музей МАОУ СОШ №17 "Хранители Памяти" | г. Улан-Удэ</p>
-        <p><a href="#" id="installLink">Установить приложение на устройство</a> для работы без интернета</p>
-    </footer>
+    <!-- Кнопка установки PWA -->
+    <button id="installButton" class="install-button">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'%3E%3C/path%3E%3Cpolyline points='7 10 12 15 17 10'%3E%3C/polyline%3E%3Cline x1='12' y1='15' x2='12' y2='3'%3E%3C/line%3E%3C/svg%3E" alt="Установить">
+        Установить приложение
+    </button>
+    <div id="installInfo" class="install-info"></div>
 
     <script>
         // Переменные для хранения событий установки
@@ -252,16 +223,16 @@
         
         // Функция для отображения инструкций по установке
         function showInstallInstructions() {
-            const pwaInfo = document.getElementById('pwaInfo');
+            const installInfo = document.getElementById('installInfo');
             const installButton = document.getElementById('installButton');
             
             if (isIOS) {
-                pwaInfo.innerHTML = 'Для установки на iOS: нажмите <strong>Поделиться</strong> <span style="font-size:18px">⎙</span>, затем <strong>На экран «Домой»</strong>';
+                installInfo.innerHTML = 'Для установки на iOS: нажмите <strong>Поделиться</strong> <span style="font-size:18px">⎙</span>, затем <strong>На экран «Домой»</strong>';
                 installButton.style.display = 'none';
             } else if (deferredPrompt) {
                 // Для Android и других устройств с поддержкой установки
-                pwaInfo.innerHTML = 'Установите приложение для работы без интернета';
-                installButton.style.display = 'inline-block';
+                installInfo.innerHTML = 'Установите приложение для работы без интернета';
+                installButton.style.display = 'block';
             } else {
                 // Если приложение уже установлено или браузер не поддерживает установку
                 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
@@ -269,10 +240,10 @@
                                     document.referrer.includes('android-app://');
                 
                 if (isStandalone) {
-                    pwaInfo.innerHTML = 'Приложение уже установлено';
+                    installInfo.innerHTML = 'Приложение уже установлено';
                     installButton.style.display = 'none';
                 } else {
-                    pwaInfo.innerHTML = 'Ваш браузер не поддерживает установку приложений';
+                    installInfo.innerHTML = 'Ваш браузер не поддерживает установку приложений или приложение уже установлено';
                     installButton.style.display = 'none';
                 }
             }
@@ -302,18 +273,6 @@
             deferredPrompt = null;
             // Обновляем отображение
             showInstallInstructions();
-        });
-        
-        // Обработчик нажатия на ссылку установки
-        document.getElementById('installLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            if (deferredPrompt) {
-                document.getElementById('installButton').click();
-            } else {
-                showInstallInstructions();
-                // Прокручиваем к инструкциям
-                document.querySelector('.install-container').scrollIntoView({ behavior: 'smooth' });
-            }
         });
         
         // Проверяем, установлено ли приложение
