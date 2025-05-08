@@ -1,8 +1,8 @@
 {
-    "name": "Виртуальный музей МАОУ СОШ №17",
+    "name": "Музей 17",
     "short_name": "Музей СОШ №17",
     "description": "Виртуальный музей Улан-Удэ МАОУ СОШ №17 'Хранители Памяти'",
-    "start_url": "/index.html",
+    "start_url": "/site_v-0-0-1",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#3498db",
