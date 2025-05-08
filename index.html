@@ -157,26 +157,9 @@
         }
         
         /* Стили для иконки в шапке */
-        .app-icon {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: calc(100% - 10px);
-            max-width: 60px;
-            height: auto;
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            padding: 0;
-            margin: 0;
-            overflow: hidden;
-            z-index: 10;
-        }
-        
-        /* Обеспечиваем круглую маску для иконки */
         .app-icon-container {
             position: absolute;
-            right: 15px;
+            left: 15px; /* Изменено с right на left */
             top: 50%;
             transform: translateY(-50%);
             width: 60px;
@@ -191,6 +174,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: center; /* Центрирование изображения */
         }
         
         /* Адаптивность для мобильных устройств */
@@ -198,19 +182,19 @@
             .app-icon-container {
                 width: 40px;
                 height: 40px;
-                right: 10px;
+                left: 10px; /* Изменено с right на left */
             }
         }
         
         /* Обеспечиваем отступ для контента в шапке, чтобы иконка не перекрывала текст */
         .header-content {
             position: relative;
-            padding-right: 80px; /* Отступ справа для иконки */
+            padding-left: 80px; /* Изменено с padding-right на padding-left */
         }
         
         @media (max-width: 768px) {
             .header-content {
-                padding-right: 60px;
+                padding-left: 60px; /* Изменено с padding-right на padding-left */
             }
         }
     </style>
@@ -225,9 +209,9 @@
                     <p>80 лет Великой Победы</p>
                 </div>
                 
-                <!-- Добавляем иконку приложения в шапку -->
+                <!-- Добавляем иконку приложения в шапку (слева) -->
                 <div class="app-icon-container">
-                    <img src="icons/icon-192x192.png" alt="Иконка приложения" class="app-icon">
+                    <img src="icons/icon-192x192.png" alt="Иконка приложения">
                 </div>
             </div>
         </div>
@@ -262,9 +246,6 @@
         <footer>
             <p>© 2024 Виртуальный музей МАОУ СОШ №17 "Хранители Памяти" | г. Улан-Удэ</p>
             <p>Контакты: тел. +7(301) 241-07-06 | email: school_17@govrb.ru</p>
-            
-            <!-- Добавляем ссылку для установки PWA -->
-            <p><a href="#" id="installPWA" style="color: #3498db; text-decoration: none;">Установить приложение</a> для работы без интернета</p>
         </footer>
     </div>
 
