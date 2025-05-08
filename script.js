@@ -5,194 +5,271 @@ if ('serviceWorker' in navigator) {
         .then(registration => {
           console.log('ServiceWorker зарегистрирован успешно:', registration.scope);
           
-          // После успешной регистрации начинаем кэширование ресурсов
+          // После успешной регистрации проверяем, нужно ли кэшировать ресурсы
           setTimeout(() => {
-            preloadResources();
+            checkAndPreloadResources();
           }, 2000); // Небольшая задержка для завершения загрузки страницы
         })
         .catch(error => {
           console.log('Ошибка при регистрации ServiceWorker:', error);
         });
     });
+}
+
+// Проверка наличия ресурсов в кэше перед загрузкой
+async function checkAndPreloadResources() {
+  // Проверяем, были ли уже загружены ресурсы
+  if (localStorage.getItem('resourcesPreloaded')) {
+    console.log('Ресурсы уже были предзагружены ранее');
+    return;
   }
   
-  // Предварительная загрузка важных ресурсов
-  function preloadResources() {
-    console.log('Начинаем предварительную загрузку ресурсов...');
-    
-    // Предварительная загрузка HTML-файлов
-    const htmlFiles = [
-      'home.html',
-      'history.html',
-      'monuments.html',
-      'archive.html',
-      'items.html',
-      'war-history.html',
-      'svo.html',
-      '1.html',
-      '2.html',
-      '3.html',
-      '4.html',
-      '5.html',
-      '6.html',
-      '7.html',
-      '8.html',
-      '9.html',
-      '10.html',
-      '11.html'
-    ];
-    
-    htmlFiles.forEach(file => {
-      fetch(file).catch(err => console.log(`Не удалось предзагрузить ${file}`, err));
-    });
-    
-    // Предварительная загрузка изображений с no-cors
-    const imageUrls = [
-      'https://archive.org/download/image2_20250424/image2.png',
-      'https://archive.org/download/20151224_103912_20250425_145529/20151224_103912.jpg',
-      'https://archive.org/download/20151224_103902_20250425_145418/20151224_103902.jpg',
-      'https://archive.org/download/20151224_103905_20250425_145346/20151224_103905.jpg',
-      'https://archive.org/download/20151224_103847_20250425_145311/20151224_103847.jpg',
-      'https://archive.org/download/20151224_103817_20250425_145226/20151224_103817.jpg',
-      'https://archive.org/download/20151224_103810_20250425_145153/20151224_103810.jpg',
-      'https://archive.org/download/img-20250425-064007/IMG_20250425_063855.jpg',
-      'https://archive.org/download/img-20250425-064007/IMG_20250425_063946.jpg',
-      'https://archive.org/download/img-20250425-064007/IMG_20250425_063918.jpg',
-      'https://archive.org/download/img-20250425-064007/IMG_20250425_064007.jpg'
-    ];
-    
-    // Используем fetch с no-cors для внешних ресурсов
-    imageUrls.forEach(url => {
-      fetch(url, { mode: 'no-cors' })
-        .then(() => console.log(`Предзагружен ресурс: ${url}`))
-        .catch(err => console.log(`Не удалось предзагрузить ${url}`, err));
-      
-      // Дополнительно через Image для изображений
-      const img = new Image();
-      img.src = url;
-    });
-    
-    // Предварительная загрузка постеров для видео
-    const posterUrls = [
-      'https://archive.org/services/img/Marina_small_20250425_084033',
-      'https://archive.org/services/img/T.Alesha_small_20250425_084121',
-      'https://archive.org/services/img/Roma_small_20250425_084156',
-      'https://archive.org/services/img/Ania_small_20250425_084243',
-      'https://archive.org/services/img/Bal_zhinima_small_20250425_084348',
-      'https://archive.org/services/img/Dasha_small_20250425_084634',
-      'https://archive.org/services/img/O.Aleksei_small_20250425_084751',
-      'https://archive.org/services/img/Il_ia_small_20250425_084957',
-      'https://archive.org/services/img/Arsenii_small_20250425_085024',
-      'https://archive.org/services/img/Fedor_small_20250425_085055',
-      'https://archive.org/services/img/small_20250423',
-      'https://archive.org/services/img/online-video-cutter.com-small'
-    ];
-    
-    posterUrls.forEach(url => {
-      fetch(url, { mode: 'no-cors' })
-        .then(() => console.log(`Предзагружен постер: ${url}`))
-        .catch(err => console.log(`Не удалось предзагрузить постер ${url}`, err));
-    });
-    
-    // После загрузки изображений начинаем кэшировать видео
-    setTimeout(() => {
-      cacheAllVideos();
-    }, 3000);
-  }
+  console.log('Начинаем предварительную загрузку ресурсов...');
   
-  // Функция для принудительного кэширования видео
-  function cacheVideo(videoUrl) {
-    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({
-        type: 'CACHE_VIDEO',
-        url: videoUrl
-      });
-      console.log('Запрос на кэширование видео отправлен:', videoUrl);
-      return true;
+  // Предварительная загрузка HTML-файлов
+  const htmlFiles = [
+    'home.html',
+    'history.html',
+    'monuments.html',
+    'archive.html',
+    'items.html',
+    'war-history.html',
+    'svo.html',
+    '1.html',
+    '2.html',
+    '3.html',
+    '4.html',
+    '5.html',
+    '6.html',
+    '7.html',
+    '8.html',
+    '9.html',
+    '10.html',
+    '11.html'
+  ];
+  
+  // Загружаем HTML файлы
+  for (const file of htmlFiles) {
+    try {
+      const isCached = await isResourceCached(file);
+      if (!isCached) {
+        await fetch(file);
+      }
+    } catch (err) {
+      console.log(`Не удалось предзагрузить ${file}`, err);
     }
-    return false;
   }
   
-  // Функция для автоматического кэширования всех видео
-  function cacheAllVideos() {
-    console.log('Начинаем кэширование всех видео...');
-    
-    const videoUrls = [
-      'https://archive.org/download/Marina_small_20250425_084033/%D0%9C%D0%B0%D1%80%D0%B8%D0%BD%D0%B0_small.mp4',
-      'https://archive.org/download/T.Alesha_small_20250425_084121/%D0%A2.%D0%90%D0%BB%D0%B5%D1%88%D0%B0_small.mp4',
-      'https://archive.org/download/Roma_small_20250425_084156/%D0%A0%D0%BE%D0%BC%D0%B0_small.mp4',
-      'https://archive.org/download/Ania_small_20250425_084243/%D0%90%D0%BD%D1%8F_small.mp4',
-      'https://archive.org/download/Bal_zhinima_small_20250425_084348/%D0%91%D0%B0%D0%BB%D1%8C%D0%B6%D0%B8%D0%BD%D0%B8%D0%BC%D0%B0_small.mp4',
-      'https://archive.org/download/Dasha_small_20250425_084634/%D0%94%D0%B0%D1%88%D0%B0_small.mp4',
-      'https://archive.org/download/O.Aleksei_small_20250425_084751/%D0%9E.%D0%90%D0%BB%D0%B5%D0%BA%D1%81%D0%B5%D0%B9_small.mp4',
-      'https://archive.org/download/Il_ia_small_20250425_084957/%D0%98%D0%BB%D1%8C%D1%8F_small.mp4',
-      'https://archive.org/download/Arsenii_small_20250425_085024/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D0%B8%D0%B9_small.mp4',
-      'https://archive.org/download/Fedor_small_20250425_085055/%D0%A4%D0%B5%D0%B4%D0%BE%D1%80_small.mp4',
-      'https://archive.org/download/small_20250423/%D0%92%D0%BE%D0%B9%D0%BD%D0%B0%20%D0%B2%20%D0%B8%D1%81%D1%82%D0%BE%D1%80%D0%B8%D0%B8%20%D0%BC%D0%BE%D0%B5%D0%B9%20%D1%81%D0%B5%D0%BC%D1%8C%D0%B8_small.mp4',
-      'https://archive.org/download/small_20250423/%D0%92%D0%BE%D0%B9%D0%BD%D0%B0%20%D0%B2%20%D0%B8%D1%81%D1%82%D0%BE%D1%80%D0%B8%D0%B8%20%D1%81%D0%B5%D0%BC%D1%8C%D0%B8_small.mp4',
-      'https://archive.org/download/online-video-cutter.com-small/Герои%20села%20Улюн%20(online-video-cutter.com)_small.mp4'
-    ];
-    
-    // Кэшируем видео с задержкой, чтобы не перегружать сеть
-    let index = 0;
-    
-    function cacheNextVideo() {
-      if (index < videoUrls.length) {
-        const url = videoUrls[index];
-        cacheVideo(url);
-        console.log(`Запущено кэширование видео ${index + 1} из ${videoUrls.length}: ${url}`);
-        index++;
+  // Предварительная загрузка изображений с no-cors
+  const imageUrls = [
+    'https://archive.org/download/image2_20250424/image2.png',
+    'https://archive.org/download/20151224_103912_20250425_145529/20151224_103912.jpg',
+    'https://archive.org/download/20151224_103902_20250425_145418/20151224_103902.jpg',
+    'https://archive.org/download/20151224_103905_20250425_145346/20151224_103905.jpg',
+    'https://archive.org/download/20151224_103847_20250425_145311/20151224_103847.jpg',
+    'https://archive.org/download/20151224_103817_20250425_145226/20151224_103817.jpg',
+    'https://archive.org/download/20151224_103810_20250425_145153/20151224_103810.jpg',
+    'https://archive.org/download/img-20250425-064007/IMG_20250425_063855.jpg',
+    'https://archive.org/download/img-20250425-064007/IMG_20250425_063946.jpg',
+    'https://archive.org/download/img-20250425-064007/IMG_20250425_063918.jpg',
+    'https://archive.org/download/img-20250425-064007/IMG_20250425_064007.jpg'
+  ];
+  
+  // Загружаем изображения, если они еще не в кэше
+  for (const url of imageUrls) {
+    try {
+      const isCached = await isResourceCached(url);
+      if (!isCached) {
+        await fetch(url, { mode: 'no-cors' });
+        console.log(`Предзагружен ресурс: ${url}`);
         
-        // Задержка 3 секунды между запросами на кэширование
-        setTimeout(cacheNextVideo, 3000);
+        // Дополнительно через Image для изображений
+        const img = new Image();
+        img.src = url;
       } else {
-        console.log('Кэширование всех видео завершено');
+        console.log(`Ресурс уже в кэше: ${url}`);
+      }
+    } catch (err) {
+      console.log(`Не удалось предзагрузить ${url}`, err);
+    }
+  }
+  
+  // Предварительная загрузка постеров для видео
+  const posterUrls = [
+    'https://archive.org/services/img/Marina_small_20250425_084033',
+    'https://archive.org/services/img/T.Alesha_small_20250425_084121',
+    'https://archive.org/services/img/Roma_small_20250425_084156',
+    'https://archive.org/services/img/Ania_small_20250425_084243',
+    'https://archive.org/services/img/Bal_zhinima_small_20250425_084348',
+    'https://archive.org/services/img/Dasha_small_20250425_084634',
+    'https://archive.org/services/img/O.Aleksei_small_20250425_084751',
+    'https://archive.org/services/img/Il_ia_small_20250425_084957',
+    'https://archive.org/services/img/Arsenii_small_20250425_085024',
+    'https://archive.org/services/img/Fedor_small_20250425_085055',
+    'https://archive.org/services/img/small_20250423',
+    'https://archive.org/services/img/online-video-cutter.com-small'
+  ];
+  
+  // Загружаем постеры, если они еще не в кэше
+  for (const url of posterUrls) {
+    try {
+      const isCached = await isResourceCached(url);
+      if (!isCached) {
+        await fetch(url, { mode: 'no-cors' });
+        console.log(`Предзагружен постер: ${url}`);
+      } else {
+        console.log(`Постер уже в кэше: ${url}`);
+      }
+    } catch (err) {
+      console.log(`Не удалось предзагрузить постер ${url}`, err);
+    }
+  }
+  
+  // Отмечаем, что ресурсы были предзагружены
+  localStorage.setItem('resourcesPreloaded', 'true');
+  
+  // После загрузки изображений начинаем проверять видео
+  setTimeout(() => {
+    checkAndCacheVideos();
+  }, 3000);
+}
+
+// Функция для проверки наличия ресурса в кэше
+async function isResourceCached(url) {
+  try {
+    if (!('caches' in window)) {
+      return false;
+    }
+    
+    const cacheNames = await caches.keys();
+    for (const cacheName of cacheNames) {
+      const cache = await caches.open(cacheName);
+      const response = await cache.match(url);
+      if (response) {
+        return true;
       }
     }
-    
-    // Запускаем процесс кэширования
-    cacheNextVideo();
+    return false;
+  } catch (error) {
+    console.error('Ошибка при проверке кэша:', error);
+    return false;
+  }
+}
+
+// Функция для принудительного кэширования видео
+function cacheVideo(videoUrl) {
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({
+      type: 'CACHE_VIDEO',
+      url: videoUrl
+    });
+    console.log('Запрос на кэширование видео отправлен:', videoUrl);
+    return true;
+  }
+  return false;
+}
+
+// Функция для проверки и кэширования всех видео
+async function checkAndCacheVideos() {
+  // Проверяем, были ли уже кэшированы видео
+  if (localStorage.getItem('videosCached')) {
+    console.log('Видео уже были кэшированы ранее');
+    return;
   }
   
-  // Автоматическое кэширование видео при просмотре
-  document.addEventListener('DOMContentLoaded', () => {
-    // Находим все видео на странице
-    const videos = document.querySelectorAll('video');
-    
-    videos.forEach(video => {
-      // Получаем URL видео
-      const sources = video.querySelectorAll('source');
-      sources.forEach(source => {
-        const videoUrl = source.src;
-        if (videoUrl) {
-          // Автоматически кэшируем видео при взаимодействии с ним
-          video.addEventListener('play', () => {
-            cacheVideo(videoUrl);
-          }, { once: true }); // Запускаем только один раз
-        }
-      });
-    });
-  });
+  console.log('Начинаем кэширование всех видео...');
   
-  // Функция для проверки состояния сети
-  function updateOnlineStatus() {
-    const status = navigator.onLine ? 'онлайн' : 'офлайн';
-    console.log(`Статус сети: ${status}`);
-    
-    // Можно добавить индикатор состояния сети на страницу
-    const statusIndicator = document.getElementById('network-status');
-    if (statusIndicator) {
-      statusIndicator.textContent = `Режим: ${status}`;
-      statusIndicator.className = navigator.onLine ? 'online' : 'offline';
+  const videoUrls = [
+    'https://archive.org/download/Marina_small_20250425_084033/%D0%9C%D0%B0%D1%80%D0%B8%D0%BD%D0%B0_small.mp4',
+    'https://archive.org/download/T.Alesha_small_20250425_084121/%D0%A2.%D0%90%D0%BB%D0%B5%D1%88%D0%B0_small.mp4',
+    'https://archive.org/download/Roma_small_20250425_084156/%D0%A0%D0%BE%D0%BC%D0%B0_small.mp4',
+    'https://archive.org/download/Ania_small_20250425_084243/%D0%90%D0%BD%D1%8F_small.mp4',
+    'https://archive.org/download/Bal_zhinima_small_20250425_084348/%D0%91%D0%B0%D0%BB%D1%8C%D0%B6%D0%B8%D0%BD%D0%B8%D0%BC%D0%B0_small.mp4',
+    'https://archive.org/download/Dasha_small_20250425_084634/%D0%94%D0%B0%D1%88%D0%B0_small.mp4',
+    'https://archive.org/download/O.Aleksei_small_20250425_084751/%D0%9E.%D0%90%D0%BB%D0%B5%D0%BA%D1%81%D0%B5%D0%B9_small.mp4',
+    'https://archive.org/download/Il_ia_small_20250425_084957/%D0%98%D0%BB%D1%8C%D1%8F_small.mp4',
+    'https://archive.org/download/Arsenii_small_20250425_085024/%D0%90%D1%80%D1%81%D0%B5%D0%BD%D0%B8%D0%B9_small.mp4',
+    'https://archive.org/download/Fedor_small_20250425_085055/%D0%A4%D0%B5%D0%B4%D0%BE%D1%80_small.mp4',
+    'https://archive.org/download/small_20250423/%D0%92%D0%BE%D0%B9%D0%BD%D0%B0%20%D0%B2%20%D0%B8%D1%81%D1%82%D0%BE%D1%80%D0%B8%D0%B8%20%D0%BC%D0%BE%D0%B5%D0%B9%20%D1%81%D0%B5%D0%BC%D1%8C%D0%B8_small.mp4',
+    'https://archive.org/download/small_20250423/%D0%92%D0%BE%D0%B9%D0%BD%D0%B0%20%D0%B2%20%D0%B8%D1%81%D1%82%D0%BE%D1%80%D0%B8%D0%B8%20%D1%81%D0%B5%D0%BC%D1%8C%D0%B8_small.mp4',
+    'https://archive.org/download/online-video-cutter.com-small/Герои%20села%20Улюн%20(online-video-cutter.com)_small.mp4'
+  ];
+  
+  // Кэшируем видео с задержкой, чтобы не перегружать сеть
+  let index = 0;
+  
+  async function cacheNextVideo() {
+    if (index < videoUrls.length) {
+      const url = videoUrls[index];
+      
+      // Проверяем, есть ли видео уже в кэше
+      const isCached = await isResourceCached(url);
+      
+      if (!isCached) {
+        cacheVideo(url);
+        console.log(`Запущено кэширование видео ${index + 1} из ${videoUrls.length}: ${url}`);
+      } else {
+        console.log(`Видео уже в кэше: ${url}`);
+      }
+      
+      index++;
+      
+      // Задержка 3 секунды между запросами на кэширование
+      setTimeout(cacheNextVideo, 3000);
+    } else {
+      console.log('Кэширование всех видео завершено');
+      localStorage.setItem('videosCached', 'true');
     }
   }
   
-  // Отслеживаем изменения состояния сети
-  window.addEventListener('online', updateOnlineStatus);
-  window.addEventListener('offline', updateOnlineStatus);
-  updateOnlineStatus(); // Проверяем при загрузке
+  // Запускаем процесс кэширования
+  cacheNextVideo();
+}
+
+// Автоматическое кэширование видео при просмотре
+document.addEventListener('DOMContentLoaded', () => {
+  // Находим все видео на странице
+  const videos = document.querySelectorAll('video');
   
-  // Остальной код вашего script.js
+  videos.forEach(video => {
+    // Получаем URL видео
+    const sources = video.querySelectorAll('source');
+    sources.forEach(source => {
+      const videoUrl = source.src;
+      if (videoUrl) {
+        // Проверяем, есть ли видео в кэше перед кэшированием
+        isResourceCached(videoUrl).then(isCached => {
+          if (!isCached) {
+            // Автоматически кэшируем видео при взаимодействии с ним
+            video.addEventListener('play', () => {
+              cacheVideo(videoUrl);
+            }, { once: true }); // Запускаем только один раз
+          }
+        });
+      }
+    });
+  });
+});
+
+// Функция для проверки состояния сети
+function updateOnlineStatus() {
+  const status = navigator.onLine ? 'онлайн' : 'офлайн';
+  console.log(`Статус сети: ${status}`);
+  
+  // Можно добавить индикатор состояния сети на страницу
+  const statusIndicator = document.getElementById('network-status');
+  if (statusIndicator) {
+    statusIndicator.textContent = `Режим: ${status}`;
+    statusIndicator.className = navigator.onLine ? 'online' : 'offline';
+  }
+}
+
+// Отслеживаем изменения состояния сети
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus(); // Проверяем при загрузке
+
+// Остальной код вашего script.js
 
 document.addEventListener('DOMContentLoaded', function() {
     // --- Основные элементы DOM ---
