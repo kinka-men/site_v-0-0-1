@@ -5,8 +5,7 @@
     "start_url": "/site_v-0-0-1",
     "display": "standalone",
     "scope": "/",
-    "purpose": ["any", "maskable"],
-    "orientation": "any"
+    "orientation": "any",
     "background_color": "#ffffff",
     "theme_color": "#3498db",
     "icons": [
@@ -21,4 +20,4 @@
         "type": "image/png"
       }
     ]
-  }
+}
