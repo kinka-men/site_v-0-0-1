@@ -197,40 +197,6 @@
         <span id="installInfo" class="install-info"></span>
     </div>
 
-    <script>
-        // Минимальный код для установки PWA, который можно добавить в основной JS
-        let deferredPrompt;
-        
-        // Скрываем кнопку по умолчанию
-        document.getElementById('installButton').style.display = 'none';
-        
-        // Обработчик события beforeinstallprompt
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            
-            // Показываем кнопку установки
-            document.getElementById('installButton').style.display = 'inline-block';
-        });
-        
-        // Обработчик нажатия на кнопку установки
-        document.getElementById('installButton').addEventListener('click', async () => {
-            if (!deferredPrompt) return;
-            
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`Результат установки: ${outcome}`);
-            deferredPrompt = null;
-            
-            // Скрываем кнопку после попытки установки
-            document.getElementById('installButton').style.display = 'none';
-        });
-        
-        // Обработчик успешной установки
-        window.addEventListener('appinstalled', () => {
-            console.log('Приложение установлено');
-            document.getElementById('installButton').style.display = 'none';
-        });
-    </script>
+   
 </body>
 </html>
