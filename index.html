@@ -155,6 +155,64 @@
             cursor: pointer;
             margin-top: 15px;
         }
+        
+        /* Стили для иконки в шапке */
+        .app-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: calc(100% - 10px);
+            max-width: 60px;
+            height: auto;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            z-index: 10;
+        }
+        
+        /* Обеспечиваем круглую маску для иконки */
+        .app-icon-container {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        
+        .app-icon-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 768px) {
+            .app-icon-container {
+                width: 40px;
+                height: 40px;
+                right: 10px;
+            }
+        }
+        
+        /* Обеспечиваем отступ для контента в шапке, чтобы иконка не перекрывала текст */
+        .header-content {
+            position: relative;
+            padding-right: 80px; /* Отступ справа для иконки */
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                padding-right: 60px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -165,6 +223,11 @@
                 <div class="logo">
                     <h1>Виртуальный музей Улан-Удэ МАОУ СОШ №17 "Хранители Памяти"</h1>
                     <p>80 лет Великой Победы</p>
+                </div>
+                
+                <!-- Добавляем иконку приложения в шапку -->
+                <div class="app-icon-container">
+                    <img src="icons/icon-192x192.png" alt="Иконка приложения" class="app-icon">
                 </div>
             </div>
         </div>
@@ -199,6 +262,9 @@
         <footer>
             <p>© 2024 Виртуальный музей МАОУ СОШ №17 "Хранители Памяти" | г. Улан-Удэ</p>
             <p>Контакты: тел. +7(301) 241-07-06 | email: school_17@govrb.ru</p>
+            
+            <!-- Добавляем ссылку для установки PWA -->
+            <p><a href="#" id="installPWA" style="color: #3498db; text-decoration: none;">Установить приложение</a> для работы без интернета</p>
         </footer>
     </div>
 
