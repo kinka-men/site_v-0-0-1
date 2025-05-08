@@ -101,16 +101,14 @@
 
         /* Стили для кнопки установки PWA */
         .install-button {
-            display: block;
-            width: 80%;
-            max-width: 300px;
-            margin: 30px auto;
+            display: inline-block;
+            margin: 20px auto;
             background-color: #d73a11;
             color: white;
             border: none;
             border-radius: 5px;
-            padding: 12px 20px;
-            font-size: 16px;
+            padding: 8px 15px;
+            font-size: 14px;
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             transition: background-color 0.3s;
@@ -122,19 +120,16 @@
             background-color: #b32d0c;
         }
 
-        .install-button img {
-            vertical-align: middle;
-            margin-right: 8px;
-            width: 20px;
-            height: 20px;
+        .install-container {
+            text-align: center;
+            margin: 20px auto;
         }
 
         .install-info {
-            text-align: center;
-            margin: 10px auto 30px;
+            display: inline-block;
+            margin: 0 10px;
             font-size: 14px;
             color: #666;
-            max-width: 80%;
         }
 
         @media (max-width: 1100px) {
@@ -197,95 +192,44 @@
     </div>
 
     <!-- Кнопка установки PWA -->
-    <button id="installButton" class="install-button">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'%3E%3C/path%3E%3Cpolyline points='7 10 12 15 17 10'%3E%3C/polyline%3E%3Cline x1='12' y1='15' x2='12' y2='3'%3E%3C/line%3E%3C/svg%3E" alt="Установить">
-        Установить приложение
-    </button>
-    <div id="installInfo" class="install-info"></div>
+    <div class="install-container">
+        <button id="installButton" class="install-button">Установить приложение</button>
+        <span id="installInfo" class="install-info"></span>
+    </div>
 
     <script>
-        // Переменные для хранения событий установки
+        // Минимальный код для установки PWA, который можно добавить в основной JS
         let deferredPrompt;
-        let isIOS = false;
         
-        // Проверяем, является ли устройство iOS
-        function detectIOS() {
-            return [
-                'iPad Simulator',
-                'iPhone Simulator',
-                'iPod Simulator',
-                'iPad',
-                'iPhone',
-                'iPod'
-            ].includes(navigator.platform) || 
-            (navigator.userAgent.includes("Mac") && "ontouchend" in document);
-        }
-        
-        // Функция для отображения инструкций по установке
-        function showInstallInstructions() {
-            const installInfo = document.getElementById('installInfo');
-            const installButton = document.getElementById('installButton');
-            
-            if (isIOS) {
-                installInfo.innerHTML = 'Для установки на iOS: нажмите <strong>Поделиться</strong> <span style="font-size:18px">⎙</span>, затем <strong>На экран «Домой»</strong>';
-                installButton.style.display = 'none';
-            } else if (deferredPrompt) {
-                // Для Android и других устройств с поддержкой установки
-                installInfo.innerHTML = 'Установите приложение для работы без интернета';
-                installButton.style.display = 'block';
-            } else {
-                // Если приложение уже установлено или браузер не поддерживает установку
-                const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                                    window.navigator.standalone || 
-                                    document.referrer.includes('android-app://');
-                
-                if (isStandalone) {
-                    installInfo.innerHTML = 'Приложение уже установлено';
-                    installButton.style.display = 'none';
-                } else {
-                    installInfo.innerHTML = 'Ваш браузер не поддерживает установку приложений или приложение уже установлено';
-                    installButton.style.display = 'none';
-                }
-            }
-        }
+        // Скрываем кнопку по умолчанию
+        document.getElementById('installButton').style.display = 'none';
         
         // Обработчик события beforeinstallprompt
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Предотвращаем стандартное отображение подсказки
             e.preventDefault();
-            // Сохраняем событие для использования позже
             deferredPrompt = e;
+            
             // Показываем кнопку установки
-            showInstallInstructions();
+            document.getElementById('installButton').style.display = 'inline-block';
         });
         
         // Обработчик нажатия на кнопку установки
         document.getElementById('installButton').addEventListener('click', async () => {
-            if (!deferredPrompt) {
-                return;
-            }
-            // Показываем диалог установки
+            if (!deferredPrompt) return;
+            
             deferredPrompt.prompt();
-            // Ждем ответа пользователя
             const { outcome } = await deferredPrompt.userChoice;
             console.log(`Результат установки: ${outcome}`);
-            // Очищаем сохраненное событие
             deferredPrompt = null;
-            // Обновляем отображение
-            showInstallInstructions();
+            
+            // Скрываем кнопку после попытки установки
+            document.getElementById('installButton').style.display = 'none';
         });
         
-        // Проверяем, установлено ли приложение
-        window.addEventListener('appinstalled', (e) => {
+        // Обработчик успешной установки
+        window.addEventListener('appinstalled', () => {
             console.log('Приложение установлено');
-            deferredPrompt = null;
-            showInstallInstructions();
-        });
-        
-        // Инициализация при загрузке страницы
-        document.addEventListener('DOMContentLoaded', () => {
-            isIOS = detectIOS();
-            showInstallInstructions();
+            document.getElementById('installButton').style.display = 'none';
         });
     </script>
 </body>
