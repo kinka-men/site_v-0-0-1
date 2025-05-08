@@ -4,6 +4,8 @@ console.log('PWA script loaded');
 // В обработчике beforeinstallprompt
 window.addEventListener('beforeinstallprompt', (e) => {
     console.log('beforeinstallprompt event fired');
+    // остальной код
+});
 
 // Минимальный код для установки PWA
 let deferredPrompt;
