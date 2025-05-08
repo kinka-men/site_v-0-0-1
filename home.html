@@ -104,6 +104,61 @@
             color: #555;
         }
 
+        /* Стили для кнопки установки PWA */
+        .install-container {
+            text-align: center;
+            margin: 20px auto 30px;
+            max-width: 800px;
+        }
+
+        #installButton {
+            display: none; /* Скрыт по умолчанию, показывается через JS */
+            background-color: #d73a11;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
+        }
+
+        #installButton:hover {
+            background-color: #b32d0c;
+        }
+
+        #installButton img {
+            vertical-align: middle;
+            margin-right: 8px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .pwa-info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #777;
+        }
+
+        footer a {
+            color: #d73a11;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
         @media (max-width: 1100px) {
              .hero {
                 min-height: 200px;
@@ -163,5 +218,116 @@
         <p>Приглашаем вас совершить виртуальное путешествие по страницам истории и памяти!</p>
     </div>
 
+    <!-- Контейнер для кнопки установки PWA -->
+    <div class="install-container">
+        <button id="installButton">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'%3E%3C/path%3E%3Cpolyline points='7 10 12 15 17 10'%3E%3C/polyline%3E%3Cline x1='12' y1='15' x2='12' y2='3'%3E%3C/line%3E%3C/svg%3E" alt="Установить">
+            Установить приложение
+        </button>
+        <div class="pwa-info" id="pwaInfo"></div>
+    </div>
+
+    <footer>
+        <p>© 2024 Виртуальный музей МАОУ СОШ №17 "Хранители Памяти" | г. Улан-Удэ</p>
+        <p><a href="#" id="installLink">Установить приложение на устройство</a> для работы без интернета</p>
+    </footer>
+
+    <script>
+        // Переменные для хранения событий установки
+        let deferredPrompt;
+        let isIOS = false;
+        
+        // Проверяем, является ли устройство iOS
+        function detectIOS() {
+            return [
+                'iPad Simulator',
+                'iPhone Simulator',
+                'iPod Simulator',
+                'iPad',
+                'iPhone',
+                'iPod'
+            ].includes(navigator.platform) || 
+            (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+        }
+        
+        // Функция для отображения инструкций по установке
+        function showInstallInstructions() {
+            const pwaInfo = document.getElementById('pwaInfo');
+            const installButton = document.getElementById('installButton');
+            
+            if (isIOS) {
+                pwaInfo.innerHTML = 'Для установки на iOS: нажмите <strong>Поделиться</strong> <span style="font-size:18px">⎙</span>, затем <strong>На экран «Домой»</strong>';
+                installButton.style.display = 'none';
+            } else if (deferredPrompt) {
+                // Для Android и других устройств с поддержкой установки
+                pwaInfo.innerHTML = 'Установите приложение для работы без интернета';
+                installButton.style.display = 'inline-block';
+            } else {
+                // Если приложение уже установлено или браузер не поддерживает установку
+                const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                                    window.navigator.standalone || 
+                                    document.referrer.includes('android-app://');
+                
+                if (isStandalone) {
+                    pwaInfo.innerHTML = 'Приложение уже установлено';
+                    installButton.style.display = 'none';
+                } else {
+                    pwaInfo.innerHTML = 'Ваш браузер не поддерживает установку приложений';
+                    installButton.style.display = 'none';
+                }
+            }
+        }
+        
+        // Обработчик события beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Предотвращаем стандартное отображение подсказки
+            e.preventDefault();
+            // Сохраняем событие для использования позже
+            deferredPrompt = e;
+            // Показываем кнопку установки
+            showInstallInstructions();
+        });
+        
+        // Обработчик нажатия на кнопку установки
+        document.getElementById('installButton').addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                return;
+            }
+            // Показываем диалог установки
+            deferredPrompt.prompt();
+            // Ждем ответа пользователя
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`Результат установки: ${outcome}`);
+            // Очищаем сохраненное событие
+            deferredPrompt = null;
+            // Обновляем отображение
+            showInstallInstructions();
+        });
+        
+        // Обработчик нажатия на ссылку установки
+        document.getElementById('installLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            if (deferredPrompt) {
+                document.getElementById('installButton').click();
+            } else {
+                showInstallInstructions();
+                // Прокручиваем к инструкциям
+                document.querySelector('.install-container').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+        
+        // Проверяем, установлено ли приложение
+        window.addEventListener('appinstalled', (e) => {
+            console.log('Приложение установлено');
+            deferredPrompt = null;
+            showInstallInstructions();
+        });
+        
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            isIOS = detectIOS();
+            showInstallInstructions();
+        });
+    </script>
 </body>
 </html>
