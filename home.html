@@ -53,10 +53,7 @@
             margin-bottom: 10px;
             font-weight: bold;
             -webkit-text-stroke: 1px #fff;
-            /* text-stroke не поддерживается в большинстве браузеров, оставляем только -webkit- */
-            /* text-stroke: 1px #fff; */
             paint-order: stroke fill;
-            /* УБРАНО: text-shadow */
         }
 
         .hero .hero-content p {
@@ -64,9 +61,7 @@
             margin-bottom: 20px;
             color: #333;
             -webkit-text-stroke: 0.8px #fff;
-            /* text-stroke: 0.8px #fff; */
             paint-order: stroke fill;
-            /* УБРАНО: text-shadow */
         }
 
         .hero .hero-content .years {
@@ -102,6 +97,39 @@
         .section p {
             margin-bottom: 15px;
             color: #555;
+        }
+
+        /* Стили для кнопки установки PWA */
+        .install-button {
+            display: inline-block;
+            margin: 20px auto;
+            background-color: #d73a11;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .install-button:hover {
+            background-color: #b32d0c;
+        }
+
+        .install-container {
+            text-align: center;
+            margin: 20px auto;
+        }
+
+        .install-info {
+            display: inline-block;
+            margin: 0 10px;
+            font-size: 14px;
+            color: #666;
         }
 
         @media (max-width: 1100px) {
@@ -163,5 +191,13 @@
         <p>Приглашаем вас совершить виртуальное путешествие по страницам истории и памяти!</p>
     </div>
 
+    <!-- Кнопка установки PWA -->
+    <div class="install-container">
+        <button id="installButton" class="install-button">Установить приложение</button>
+        <span id="installInfo" class="install-info"></span>
+    </div>
+
+    <!-- Подключение файла скриптов -->
+    <script src="script.js"></script>
 </body>
 </html>
